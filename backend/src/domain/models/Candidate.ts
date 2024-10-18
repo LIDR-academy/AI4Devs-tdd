@@ -109,13 +109,5 @@ export class Candidate {
             }
         }
     }
-
-    static async findOne(id: number): Promise<Candidate | null> {
-        const data = await prisma.candidate.findUnique({
-            where: { id: id }
-        });
-        if (!data) return null;
-        return new Candidate(data);
-    }
 }
 
