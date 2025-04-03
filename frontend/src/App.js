@@ -6,7 +6,10 @@ import AddCandidate from './components/AddCandidateForm'; // Asegúrate de tener
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ 
+      v7_startTransition: true,
+      v7_relativeSplatPath: true 
+    }}>
       <Routes>
         <Route path="/" element={<RecruiterDashboard />} />
         <Route path="/add-candidate" element={<AddCandidate />} /> {/* Agrega esta línea */}
