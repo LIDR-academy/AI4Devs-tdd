@@ -23,9 +23,9 @@ export class Candidate {
         this.email = data.email;
         this.phone = data.phone;
         this.address = data.address;
-        this.education = data.education || [];
-        this.workExperience = data.workExperience || [];
-        this.resumes = data.resumes || [];
+        this.education = data.educations?.map((edu: any) => new Education(edu)) || [];
+        this.workExperience = data.workExperiences?.map((exp: any) => new WorkExperience(exp)) || [];
+        this.resumes = data.resumes?.map((resume: any) => new Resume(resume)) || [];
     }
 
     async save() {
@@ -112,7 +112,12 @@ export class Candidate {
 
     static async findOne(id: number): Promise<Candidate | null> {
         const data = await prisma.candidate.findUnique({
-            where: { id: id }
+            where: { id: id },
+            include: {
+                educations: true,
+                workExperiences: true,
+                resumes: true
+            }
         });
         if (!data) return null;
         return new Candidate(data);
