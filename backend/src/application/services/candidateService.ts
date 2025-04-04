@@ -53,3 +53,5 @@ export const addCandidate = async (candidateData: any) => {
         }
     }
 };
+
+export { addCandidate as insertCandidate };
