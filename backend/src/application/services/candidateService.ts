@@ -22,7 +22,7 @@ export const addCandidate = async (candidateData: any) => {
                 const educationModel = new Education(education);
                 educationModel.candidateId = candidateId;
                 await educationModel.save();
-                candidate.education.push(educationModel);
+                candidate.education?.push(educationModel);
             }
         }
 
@@ -32,7 +32,7 @@ export const addCandidate = async (candidateData: any) => {
                 const experienceModel = new WorkExperience(experience);
                 experienceModel.candidateId = candidateId;
                 await experienceModel.save();
-                candidate.workExperience.push(experienceModel);
+                candidate.workExperience?.push(experienceModel);
             }
         }
 
@@ -41,7 +41,7 @@ export const addCandidate = async (candidateData: any) => {
             const resumeModel = new Resume(candidateData.cv);
             resumeModel.candidateId = candidateId;
             await resumeModel.save();
-            candidate.resumes.push(resumeModel);
+            candidate.resumes?.push(resumeModel);
         }
         return savedCandidate;
     } catch (error: any) {
