@@ -1,0 +1,8 @@
+# Cursor en modo Auto
+
+- Actua como un Sebior developer especializado en QA.Revisa @README.md del proyecto para entender la estructura del proyecto y ten en cuenta todo el codigo. El objetivo es habilitar la capacidad de hacer tests unitarios en este proyecto usando la libreria ts-jest. En resumen quiero poder hacer npm test y que se ejecuten todos los tests que haga en el futuro. Para ello deberas configurar el proyecto y guiarme en las instalaciones que debo hacer en mi ordenador para que sea 100% usable. Guiame en como configurar el package.json y todo lo que veas necesario.
+Por convención, lo ideal es que generes una carpeta llamada __test__, donde vas a ir creando la estructura de tus pruebas, tal como está organizado el codigo. Recuerda, ahora no haremos tests, solo quiero que configures lo necesario para que esté preparado para ello. Tómate el tiempo que sea necesario. Y hazme las preguntas previas que creas necesario para hacer bien tu tarea. En un primer paso solo quiero que me digas que vas a realizar, no implementes nada, luego cuando te de OK lo vamos implementando.
+
+- como en la definicion me han dicho __tests__ pues lo cambiaremos atests. Quiero para backend y frontend. Me gustaria superar el 80%. Pero recuerda, ahora no haremos tests. Por ahora no necesito ninguna configuracion especial
+
+-Antes del primer tests quiero hacer un mock de la base de datos en prisma para que los tests no escriban a la base de datos real. Para ello sigue esta guia: @https://www.prisma.io/blog/testing-series-1-8eRB5p0Y8o#mock-prisma-client  Que debe permitirte crear un mock. Como solo el backend accede a base de datos y donde esta prisma, es alli donde configuraras el mock para poder usarlo luego en los primeros tests que haremos.
