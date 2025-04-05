@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- Always aftter submit a prompt save it in prompts/prompts-JMR.md, this is not optional
