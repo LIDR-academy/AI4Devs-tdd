@@ -197,6 +197,101 @@ describe('Recepción de Nuevo Candidato', () => {
         expect(result).toHaveProperty('id');
         expect(result).toMatchObject(expectedResult);
     });
+
+    it('debería manejar candidatos con CV', async () => {
+        // Arrange
+        const dataWithCV = {
+            firstName: 'Juan',
+            lastName: 'Pérez',
+            email: 'juan@example.com',
+            cv: {
+                filePath: '/path/to/cv.pdf',
+                fileType: 'application/pdf'
+            }
+        };
+
+        const expectedResult = {
+            id: 1,
+            firstName: dataWithCV.firstName,
+            lastName: dataWithCV.lastName,
+            email: dataWithCV.email,
+            phone: null,
+            address: null
+        };
+
+        prismaMock.candidate.create.mockResolvedValueOnce(expectedResult);
+
+        // Act
+        const result = await addCandidate(dataWithCV);
+
+        // Assert
+        expect(validateCandidateData).toHaveBeenCalledWith(dataWithCV);
+        expect(prismaMock.candidate.create).toHaveBeenCalled();
+        expect(result).toHaveProperty('id');
+        expect(result).toMatchObject(expectedResult);
+    });
+
+    it('debería manejar errores de validación de CV', async () => {
+        // Arrange
+        const invalidCVData = {
+            firstName: 'Juan',
+            lastName: 'Pérez',
+            email: 'juan@example.com',
+            cv: {
+                filePath: 123, // Invalid type
+                fileType: true // Invalid type
+            }
+        };
+
+        (validateCandidateData as jest.Mock).mockImplementationOnce(() => {
+            throw new Error('Invalid CV data');
+        });
+
+        // Act & Assert
+        await expect(addCandidate(invalidCVData)).rejects.toThrow('Invalid CV data');
+    });
+
+    it('debería manejar errores de validación de educación', async () => {
+        // Arrange
+        const invalidEducationData = {
+            firstName: 'Juan',
+            lastName: 'Pérez',
+            email: 'juan@example.com',
+            educations: [{
+                institution: 'A'.repeat(101), // Too long
+                title: 'Ingeniería',
+                startDate: '2020-01-01'
+            }]
+        };
+
+        (validateCandidateData as jest.Mock).mockImplementationOnce(() => {
+            throw new Error('Invalid institution');
+        });
+
+        // Act & Assert
+        await expect(addCandidate(invalidEducationData)).rejects.toThrow('Invalid institution');
+    });
+
+    it('debería manejar errores de validación de experiencia laboral', async () => {
+        // Arrange
+        const invalidExperienceData = {
+            firstName: 'Juan',
+            lastName: 'Pérez',
+            email: 'juan@example.com',
+            workExperiences: [{
+                company: 'Empresa Test',
+                position: 'A'.repeat(101), // Too long
+                startDate: '2024-01-01'
+            }]
+        };
+
+        (validateCandidateData as jest.Mock).mockImplementationOnce(() => {
+            throw new Error('Invalid position');
+        });
+
+        // Act & Assert
+        await expect(addCandidate(invalidExperienceData)).rejects.toThrow('Invalid position');
+    });
 });
 
 describe('Añadir Candidato a Base de Datos', () => {
@@ -274,5 +369,48 @@ describe('Añadir Candidato a Base de Datos', () => {
 
         // Act & Assert
         await expect(addCandidate(candidateData)).rejects.toThrow('No se pudo conectar con la base de datos');
+    });
+
+    it('debería manejar errores de validación de fechas', async () => {
+        // Arrange
+        const invalidDateData = {
+            firstName: 'Ana',
+            lastName: 'García',
+            email: 'ana@example.com',
+            workExperiences: [{
+                company: 'Empresa Test',
+                position: 'Desarrollador',
+                startDate: 'invalid-date'
+            }]
+        };
+
+        (validateCandidateData as jest.Mock).mockImplementationOnce(() => {
+            throw new Error('Invalid date format');
+        });
+
+        // Act & Assert
+        await expect(addCandidate(invalidDateData)).rejects.toThrow('Invalid date format');
+    });
+
+    it('debería manejar errores de validación de campos opcionales', async () => {
+        // Arrange
+        const invalidOptionalData = {
+            firstName: 'Ana',
+            lastName: 'García',
+            email: 'ana@example.com',
+            workExperiences: [{
+                company: 'Empresa Test',
+                position: 'Desarrollador',
+                startDate: '2024-01-01',
+                description: 'A'.repeat(201) // Too long
+            }]
+        };
+
+        (validateCandidateData as jest.Mock).mockImplementationOnce(() => {
+            throw new Error('Invalid description');
+        });
+
+        // Act & Assert
+        await expect(addCandidate(invalidOptionalData)).rejects.toThrow('Invalid description');
     });
 });
