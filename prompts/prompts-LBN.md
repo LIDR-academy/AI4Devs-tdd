@@ -98,6 +98,23 @@ Argument of type '{ id: number; firstName: string; lastName: string; }' is not a
 How can I resolve this? If you propose a fix, please make it concise.
 ```
 
+### Prompt #10
+**Fecha y Hora:** 2025-04-06 18:52
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+Vamos a continuar ahora con los test "Tests para servicio de carga de archivos (fileUploadService.ts)"
+```
+
+### Prompt #11
+**Fecha y Hora:** 2025-04-06 19:00
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+Vamos a continuar ahora con los test "Tests para controladores (candidateController.ts)".
+Recuerda seguir aplicando buenas prácticas y seguir añadiendo los prompts al fichero de prompts
+```
+
 ---
 
 ## Notas adicionales
