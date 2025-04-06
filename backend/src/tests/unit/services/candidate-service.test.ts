@@ -1,28 +1,104 @@
+import { PrismaClient, Prisma } from '@prisma/client';
+import { mockDeep } from 'jest-mock-extended';
 import { addCandidate } from '../../../application/services/candidateService';
-import { Candidate } from '../../../domain/models/Candidate';
-import { Education } from '../../../domain/models/Education';
-import { WorkExperience } from '../../../domain/models/WorkExperience';
-import { Resume } from '../../../domain/models/Resume';
 import { validateCandidateData } from '../../../application/validator';
 
-// Mock the modules
-jest.mock('../../../domain/models/Candidate');
-jest.mock('../../../domain/models/Education');
-jest.mock('../../../domain/models/WorkExperience');
-jest.mock('../../../domain/models/Resume');
-jest.mock('../../../application/validator');
-
-// Create a custom error type with a code property
+// Create a custom error type with a code property for Prisma errors
 interface PrismaError extends Error {
   code?: string;
 }
 
-// Need to mock the candidate service to prevent the double-wrapping of errors
-jest.mock('../../../application/services/candidateService', () => ({
-  addCandidate: jest.fn()
-}));
+// Mock the necessary modules and PrismaClient
+jest.mock('../../../application/validator');
+jest.mock('@prisma/client', () => {
+  return {
+    PrismaClient: jest.fn(() => mockPrismaClient),
+    Prisma: {
+      ...jest.requireActual('@prisma/client').Prisma
+    }
+  };
+});
+
+// Create a mock PrismaClient
+const mockPrismaClient = mockDeep<PrismaClient>();
+
+// Mock the domain models
+jest.mock('../../../domain/models/Candidate', () => {
+  return {
+    Candidate: jest.fn().mockImplementation((data) => {
+      return {
+        id: data.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        education: [],
+        workExperience: [],
+        resumes: [],
+        save: jest.fn().mockImplementation(async () => {
+          if (data.id === 999) {
+            const error = new Error('Record not found') as PrismaError;
+            error.code = 'P2025';
+            throw error;
+          } else if (data.email === 'duplicate@example.com') {
+            const error = new Error('Unique constraint failed on the fields: (`email`)') as PrismaError;
+            error.code = 'P2002';
+            throw error;
+          }
+          // Return only the basic candidate fields, not including related data
+          return {
+            id: data.id || 1,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phone: data.phone,
+            address: data.address
+          };
+        })
+      };
+    })
+  };
+});
+
+jest.mock('../../../domain/models/Education', () => {
+  return {
+    Education: jest.fn().mockImplementation((data) => {
+      return {
+        ...data,
+        candidateId: undefined,
+        save: jest.fn().mockResolvedValue({ id: 1, ...data })
+      };
+    })
+  };
+});
+
+jest.mock('../../../domain/models/WorkExperience', () => {
+  return {
+    WorkExperience: jest.fn().mockImplementation((data) => {
+      return {
+        ...data,
+        candidateId: undefined,
+        save: jest.fn().mockResolvedValue({ id: 1, ...data })
+      };
+    })
+  };
+});
+
+jest.mock('../../../domain/models/Resume', () => {
+  return {
+    Resume: jest.fn().mockImplementation((data) => {
+      return {
+        ...data,
+        candidateId: undefined,
+        save: jest.fn().mockResolvedValue({ id: 1, ...data })
+      };
+    })
+  };
+});
 
 describe('Candidate Service', () => {
+  // Test data
   const mockCandidateData = {
     firstName: 'John',
     lastName: 'Doe',
@@ -52,92 +128,107 @@ describe('Candidate Service', () => {
     }
   };
 
-  const mockSavedCandidate = {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '123456789',
-    address: 'Test Address',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
-    // Default implementation that succeeds
-    (validateCandidateData as jest.Mock).mockImplementation(() => {});
   });
-
-  test('should create a new candidate successfully', async () => {
-    // Arrange
-    const mockCandidateInstance = {
-      save: jest.fn().mockResolvedValue(mockSavedCandidate),
-      education: [],
-      workExperience: [],
-      resumes: []
-    };
-    (Candidate as jest.MockedClass<typeof Candidate>).mockImplementation(() => mockCandidateInstance as any);
-    
-    const mockEducationInstance = {
-      save: jest.fn().mockResolvedValue({ id: 1 }),
-      candidateId: 0
-    };
-    (Education as jest.MockedClass<typeof Education>).mockImplementation(() => mockEducationInstance as any);
-    
-    const mockWorkExperienceInstance = {
-      save: jest.fn().mockResolvedValue({ id: 1 }),
-      candidateId: 0
-    };
-    (WorkExperience as jest.MockedClass<typeof WorkExperience>).mockImplementation(() => mockWorkExperienceInstance as any);
-    
-    const mockResumeInstance = {
-      save: jest.fn().mockResolvedValue({ id: 1 }),
-      candidateId: 0
-    };
-    (Resume as jest.MockedClass<typeof Resume>).mockImplementation(() => mockResumeInstance as any);
-
-    // Set up the addCandidate mock to return the saved candidate
-    (addCandidate as jest.Mock).mockResolvedValue(mockSavedCandidate);
+  
+  test('should create a new candidate with all related data', async () => {
+    // Arrange - no additional arrangement needed, mocks are set up
 
     // Act
     const result = await addCandidate(mockCandidateData);
 
     // Assert
-    expect(result).toBe(mockSavedCandidate);
+    expect(validateCandidateData).toHaveBeenCalledWith(mockCandidateData);
+    expect(result).toEqual({
+      id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      phone: '123456789',
+      address: 'Test Address'
+    });
+  });
+  
+  test('should create a candidate without optional data (no educations, workExperiences or CV)', async () => {
+    // Arrange
+    const simpleCandidateData = {
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'jane.smith@example.com',
+      phone: '987654321'
+    };
+
+    // Act
+    const result = await addCandidate(simpleCandidateData);
+
+    // Assert
+    expect(validateCandidateData).toHaveBeenCalledWith(simpleCandidateData);
+    expect(result).toEqual({
+      id: 1,
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'jane.smith@example.com',
+      phone: '987654321',
+      address: undefined
+    });
   });
 
   test('should throw validation error when data is invalid', async () => {
     // Arrange
     const validationError = new Error('Invalid email format');
-    
-    // Set up the addCandidate mock to throw the validation error
-    (addCandidate as jest.Mock).mockRejectedValue(validationError);
+    (validateCandidateData as jest.Mock).mockImplementationOnce(() => {
+      throw validationError;
+    });
 
     // Act & Assert
-    await expect(addCandidate(mockCandidateData)).rejects.toThrow(validationError);
+    await expect(addCandidate(mockCandidateData)).rejects.toThrow('Error: Invalid email format');
+    expect(validateCandidateData).toHaveBeenCalledWith(mockCandidateData);
   });
 
-  test('should handle database error during save', async () => {
+  test('should handle non-existent candidate when updating', async () => {
     // Arrange
-    const dbError = new Error('Database error');
-    
-    // Set up the addCandidate mock to throw the database error
-    (addCandidate as jest.Mock).mockRejectedValue(dbError);
+    const nonExistentCandidateData = {
+      ...mockCandidateData,
+      id: 999 // This ID triggers the P2025 error in our mock
+    };
 
     // Act & Assert
-    await expect(addCandidate(mockCandidateData)).rejects.toThrow(dbError);
+    await expect(addCandidate(nonExistentCandidateData)).rejects.toThrow('Record not found');
+    expect(validateCandidateData).toHaveBeenCalledWith(nonExistentCandidateData);
   });
 
   test('should handle unique constraint violation on email', async () => {
     // Arrange
-    const uniqueConstraintError = new Error('The email already exists in the database') as PrismaError;
-    uniqueConstraintError.code = 'P2002';
-    
-    // Set up the addCandidate mock to throw the constraint error
-    (addCandidate as jest.Mock).mockRejectedValue(uniqueConstraintError);
+    const duplicateEmailData = {
+      ...mockCandidateData,
+      email: 'duplicate@example.com' // This email triggers the P2002 error in our mock
+    };
 
     // Act & Assert
-    await expect(addCandidate(mockCandidateData)).rejects.toThrow('The email already exists in the database');
+    await expect(addCandidate(duplicateEmailData)).rejects.toThrow('The email already exists in the database');
+    expect(validateCandidateData).toHaveBeenCalledWith(duplicateEmailData);
+  });
+
+  test('should propagate other errors from the model', async () => {
+    // Arrange
+    const { Candidate } = require('../../../domain/models/Candidate');
+    const unexpectedError = new Error('Unexpected database error');
+    (Candidate as jest.Mock).mockImplementationOnce(() => {
+      return {
+        id: undefined,
+        firstName: mockCandidateData.firstName,
+        lastName: mockCandidateData.lastName,
+        email: mockCandidateData.email,
+        education: [],
+        workExperience: [],
+        resumes: [],
+        save: jest.fn().mockRejectedValue(unexpectedError)
+      };
+    });
+
+    // Act & Assert
+    await expect(addCandidate(mockCandidateData)).rejects.toThrow('Unexpected database error');
+    expect(validateCandidateData).toHaveBeenCalledWith(mockCandidateData);
   });
 });
