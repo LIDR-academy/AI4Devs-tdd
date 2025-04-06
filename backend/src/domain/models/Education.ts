@@ -20,28 +20,37 @@ export class Education {
     }
 
     async save() {
-        const educationData: any = {
-            institution: this.institution,
-            title: this.title,
-            startDate: this.startDate,
-            endDate: this.endDate,
-        };
+        try {
+            const educationData: any = {
+                institution: this.institution,
+                title: this.title,
+                startDate: this.startDate,
+                endDate: this.endDate,
+            };
 
-        if (this.candidateId !== undefined) {
-            educationData.candidateId = this.candidateId;
-        }
+            if (this.candidateId !== undefined) {
+                educationData.candidateId = this.candidateId;
+            }
 
-        if (this.id) {
-            // Actualizar una experiencia laboral existente
-            return await prisma.education.update({
-                where: { id: this.id },
-                data: educationData
-            });
-        } else {
-            // Crear una nueva experiencia laboral
-            return await prisma.education.create({
-                data: educationData
-            });
+            if (this.id) {
+                // Actualizar una experiencia laboral existente
+                return await prisma.education.update({
+                    where: { id: this.id },
+                    data: educationData
+                });
+            } else {
+                // Crear una nueva experiencia laboral
+                return await prisma.education.create({
+                    data: educationData
+                });
+            }
+        } catch (error: any) {
+            if (error.name === 'PrismaClientInitializationError') {
+                throw new Error('Failed to connect to database');
+            } else if (error.code === 'P2025') {
+                throw new Error('Record not found');
+            }
+            throw error;
         }
     }
 }
