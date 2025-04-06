@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addCandidate } from '../presentation/controllers/candidateController';
+import { addCandidate } from '../../application/services/candidateService';
 
 const router = Router();
 
