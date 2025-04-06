@@ -98,8 +98,6 @@ Argument of type '{ id: number; firstName: string; lastName: string; }' is not a
 How can I resolve this? If you propose a fix, please make it concise.
 ```
 
-
-
 ### Prompt #10
 **Fecha y Hora:** 2025-04-06 18:52
 **LLM:** Claude 3.7 Sonnet
@@ -115,9 +113,21 @@ Vamos a continuar ahora con los test "Tests para servicio de carga de archivos (
 ```
 Vamos a continuar ahora con los test "Tests para controladores (candidateController.ts)".
 Recuerda seguir aplicando buenas prácticas y seguir añadiendo los prompts al fichero de prompts
+```
+
+### Prompt #12
+**Fecha y Hora:** 2025-04-06 19:15
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+Vamos ahora a por los test "Tests para modelos (Candidate.ts, Education.ts, etc.)".
+Añade todos los necesarios para tener la mayor cobertura posible.
+Recuerda seguir añadiendo los prompts al fichero de prompts.
+Si creas un nuevo fichero para estos tests, debe contener dentro del nombre las iniciales LBN, igual que el primer fichero de test que creaste, que se llamaba tests-LBN.test.ts
+```
 
 ---
-```
+
 ## Notas adicionales
 - Los prompts deben ser específicos y claros
 - Incluir ejemplos concretos cuando sea posible
