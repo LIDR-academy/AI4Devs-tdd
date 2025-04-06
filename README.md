@@ -59,7 +59,7 @@ npm install
 ```
 cd backend
 npm run build
-````
+```
 4. Start the backend server:
 ```
 cd backend
@@ -80,7 +80,7 @@ The backend server will be running at http://localhost:3010, and the frontend wi
 
 ## Docker y PostgreSQL
 
-This project uses Docker to run a PostgreSQL database. Here’s how to get it up and running:
+This project uses Docker to run a PostgreSQL database. Here's how to get it up and running:
 
 Install Docker on your machine if you haven't done so already. You can download it from here.
 Navigate to the root directory of the project in your terminal.
@@ -106,12 +106,11 @@ docker-compose down
 
 To generate the database using Prisma, follow these steps:
 
-1. Make sure that the `.env` file in the root directory of the backend contains the `DATABASE_URL` variable with the correct connection string to your PostgreSQL database. If it doesn’t work, try replacing the full URL directly in `schema.prisma`, in the `url` variable.
+1. Make sure that the `.env` file in the root directory of the backend contains the `DATABASE_URL` variable with the correct connection string to your PostgreSQL database. If it doesn't work, try replacing the full URL directly in `schema.prisma`, in the `url` variable.
 
 2. Open a terminal and navigate to the backend directory where the `schema.prisma` file is located.
 
 3. Run the following command to apply the migrations to your database:
-
 ```
 npx prisma migrate dev
 ```
@@ -149,155 +148,266 @@ POST http://localhost:3010/candidates
     }
 }
 ```
--------------------------------------------------------------
 
-# LTI - Sistema de Seguimiento de Talento | ES
+# Guía de Testing con Jest para Aplicaciones React
 
-Este proyecto es una aplicación full-stack con un frontend en React y un backend en Express usando Prisma como un ORM. El frontend se inicia con Create React App y el backend está escrito en TypeScript.
+## Motivación
 
-## Explicación de Directorios y Archivos
+El testing es una parte fundamental del desarrollo de software de calidad. Implementar pruebas unitarias nos permite verificar que cada componente de nuestra aplicación funciona correctamente de manera aislada, lo que facilita la detección temprana de errores, mejora la calidad del código y simplifica el mantenimiento a largo plazo.
 
-- `backend/`: Contiene el código del lado del servidor escrito en Node.js.
-  - `src/`: Contiene el código fuente para el backend.
-    - `index.ts`: El punto de entrada para el servidor backend.
-    - `application/`: Contiene la lógica de aplicación.
-    - `domain/`: Contiene la lógica de negocio.
-    - `presentation/`: Contiene código relacionado con la capa de presentación (como controladores).
-    - `routes/`: Contiene las definiciones de rutas para la API.
-  - `prisma/`: Contiene el archivo de esquema de Prisma para ORM.
-  - `tsconfig.json`: Archivo de configuración de TypeScript.
-- `frontend/`: Contiene el código del lado del cliente escrito en React.
-  - `src/`: Contiene el código fuente para el frontend.
-  - `public/`: Contiene archivos estáticos como el archivo HTML e imágenes.
-  - `build/`: Contiene la construcción lista para producción del frontend.
-- `.env`: Contiene las variables de entorno.
-- `docker-compose.yml`: Contiene la configuración de Docker Compose para gestionar los servicios de tu aplicación.
-- `README.md`: Este archivo, contiene información sobre el proyecto e instrucciones sobre cómo ejecutarlo.
+## Tabla de Contenido
 
-## Estructura del Proyecto
+- [LTI - Talent Tracking System | ENG](#lti---talent-tracking-system--eng)
+  - [Explanation of Directories and Files](#explanation-of-directories-and-files)
+  - [Project Structure](#project-structure)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+  - [First Steps](#first-steps)
+  - [Docker y PostgreSQL](#docker-y-postgresql)
+- [Guía de Testing con Jest para Aplicaciones React](#guía-de-testing-con-jest-para-aplicaciones-react)
+  - [Motivación](#motivación)
+  - [Tabla de Contenido](#tabla-de-contenido)
+  - [Introducción](#introducción)
+  - [Objetivos](#objetivos)
+  - [Configuración del Entorno](#configuración-del-entorno)
+  - [Estructura de Pruebas](#estructura-de-pruebas)
+  - [Tipos de Pruebas Implementadas](#tipos-de-pruebas-implementadas)
+    - [Pruebas de Funciones Utilitarias](#pruebas-de-funciones-utilitarias)
+    - [Pruebas de Servicios](#pruebas-de-servicios)
+    - [Pruebas de Componentes React](#pruebas-de-componentes-react)
+  - [Mocking](#mocking)
+  - [Ejecución de Pruebas](#ejecución-de-pruebas)
+  - [Buenas Prácticas](#buenas-prácticas)
+  - [Recursos Adicionales](#recursos-adicionales)
 
-El proyecto está dividido en dos directorios principales: `frontend` y `backend`.
+## Introducción
 
-### Frontend
+En este proyecto, hemos implementado pruebas unitarias utilizando Jest, un framework de testing desarrollado por Facebook que se integra perfectamente con aplicaciones React. Jest proporciona un conjunto completo de herramientas para escribir y ejecutar pruebas, incluyendo funciones de aserción, mocking, cobertura de código y más.
 
-El frontend es una aplicación React y sus archivos principales están ubicados en el directorio `src`. El directorio `public` contiene activos estáticos y el directorio `build` contiene la construcción de producción de la aplicación.
+## Objetivos
 
-### Backend
+- Garantizar el correcto funcionamiento de los componentes individuales
+- Facilitar la refactorización de código sin introducir errores
+- Documentar el comportamiento esperado de cada parte del sistema
+- Detectar y corregir errores tempranamente en el ciclo de desarrollo
 
-El backend es una aplicación Express escrita en TypeScript. El directorio `src` contiene el código fuente, dividido en varios subdirectorios:
+## Configuración del Entorno
 
-- `application`: Contiene la lógica de aplicación.
-- `domain`: Contiene los modelos de dominio.
-- `infrastructure`: Contiene código relacionado con la infraestructura.
-- `presentation`: Contiene código relacionado con la capa de presentación.
-- `routes`: Contiene las rutas de la aplicación.
-- `tests`: Contiene las pruebas de la aplicación.
+Para configurar Jest en nuestro proyecto React con TypeScript, hemos seguido estos pasos:
 
-El directorio `prisma` contiene el esquema de Prisma.
+1. Instalación de dependencias necesarias:
 
-## Primeros Pasos
-
-Para comenzar con este proyecto, sigue estos pasos:
-
-1. Clona el repositorio.
-2. Instala las dependencias para el frontend y el backend:
-```sh
-cd frontend
-npm install
-
-cd ../backend
-npm install
-```
-3. Construye el servidor backend:
-```
-cd backend
-npm run build
-````
-4. Inicia el servidor backend:
-```
-cd backend
-npm start
-```
-5. En una nueva ventana de terminal, construye el servidor frontend:
-```
-cd frontend
-npm run build
-```
-6. Inicia el servidor frontend:
-```
-cd frontend
-npm start
+```bash
+npm install --save-dev jest ts-jest @types/jest @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript
 ```
 
-El servidor backend estará corriendo en http://localhost:3010 y el frontend estará disponible en http://localhost:3000.
+2. Creación del archivo de configuración de Jest (`jest.config.js`):
 
-## Docker y PostgreSQL
-
-Este proyecto usa Docker para ejecutar una base de datos PostgreSQL. Así es cómo ponerlo en marcha:
-
-Instala Docker en tu máquina si aún no lo has hecho. Puedes descargarlo desde aquí.
-Navega al directorio raíz del proyecto en tu terminal.
-Ejecuta el siguiente comando para iniciar el contenedor Docker:
-```
-docker-compose up -d
-```
-Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera -d corre el contenedor en modo separado, lo que significa que se ejecuta en segundo plano.
-
-Para acceder a la base de datos PostgreSQL, puedes usar cualquier cliente PostgreSQL con los siguientes detalles de conexión:
- - Host: localhost
- - Port: 5432
- - User: postgres
- - Password: password
- - Database: mydatabase
-
-Por favor, reemplaza User, Password y Database con el usuario, la contraseña y el nombre de la base de datos reales especificados en tu archivo .env.
-
-Para detener el contenedor Docker, ejecuta el siguiente comando:
-```
-docker-compose down
+```javascript
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+  moduleNameMapper: {
+    // Para manejar importaciones de archivos CSS/imágenes
+    '\\.(css|less|scss|sass)$': '<rootDir>/src/__mocks__/styleMock.js',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/__mocks__/fileMock.js',
+  },
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(js|jsx)$': 'babel-jest',
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+};
 ```
 
-Para generar la base de datos utilizando Prisma, sigue estos pasos:
+3. Configuración de Babel (`babel.config.js`):
 
-1. Asegúrate de que el archivo `.env` en el directorio raíz del backend contenga la variable `DATABASE_URL` con la cadena de conexión correcta a tu base de datos PostgreSQL. Si no te funciona, prueba a reemplazar la URL completa directamente en `schema.prisma`, en la variable `url`.
-
-2. Abre una terminal y navega al directorio del backend donde se encuentra el archivo `schema.prisma`.
-
-3. Ejecuta el siguiente comando para aplicar las migraciones a tu base de datos:
+```javascript
+module.exports = {
+  presets: [
+    '@babel/preset-env',
+    '@babel/preset-react',
+    '@babel/preset-typescript',
+  ],
+};
 ```
-npx prisma migrate dev
+
+4. Creación de archivos mock para archivos estáticos:
+
+```javascript
+// src/__mocks__/fileMock.js
+module.exports = 'test-file-stub';
+
+// src/__mocks__/styleMock.js
+module.exports = {};
 ```
 
-Una vez has dado todos los pasos, deberías poder guardar nuevos candidatos, tanto via web, como via API, y verlos en la base de datos.
+5. Configuración del archivo `setupTests.js` para extender las capacidades de Jest:
+
+```javascript
+// src/setupTests.js
+import '@testing-library/jest-dom';
+```
+
+## Estructura de Pruebas
+
+Organizamos nuestras pruebas siguiendo una estructura que refleja la de nuestro código fuente:
 
 ```
-POST http://localhost:3010/candidates
-{
-    "firstName": "Albert",
-    "lastName": "Saelices",
-    "email": "albert.saelices@gmail.com",
-    "phone": "656874937",
-    "address": "Calle Sant Dalmir 2, 5ºB. Barcelona",
-    "educations": [
-        {
-            "institution": "UC3M",
-            "title": "Computer Science",
-            "startDate": "2006-12-31",
-            "endDate": "2010-12-26"
-        }
-    ],
-    "workExperiences": [
-        {
-            "company": "Coca Cola",
-            "position": "SWE",
-            "description": "",
-            "startDate": "2011-01-13",
-            "endDate": "2013-01-17"
-        }
-    ],
-    "cv": {
-        "filePath": "uploads/1715760936750-cv.pdf",
-        "fileType": "application/pdf"
-    }
-}
+src/
+  ├── components/
+  │   ├── __tests__/
+  │   │   ├── RecruiterDashboard.test.js
+  │   │   └── SimpleForm.test.js
+  │   ├── RecruiterDashboard.js
+  │   └── SimpleForm.js
+  ├── services/
+  │   ├── __tests__/
+  │   │   └── candidateService.test.js
+  │   └── candidateService.js
+  └── utils/
+      ├── __tests__/
+      │   └── mathUtils.test.js
+      └── mathUtils.js
 ```
+
+Esta estructura facilita la navegación y mantiene una clara asociación entre el código y sus pruebas.
+
+## Tipos de Pruebas Implementadas
+
+### Pruebas de Funciones Utilitarias
+
+Las funciones utilitarias son ideales para empezar con pruebas unitarias ya que suelen ser funciones puras (sin efectos secundarios). Ejemplo de prueba para una función de suma:
+
+```javascript
+// mathUtils.js
+export const suma = (a, b) => {
+  return a + b;
+};
+
+// mathUtils.test.js
+import { suma } from '../mathUtils';
+
+describe('suma', () => {
+  it('debería sumar dos números positivos correctamente', () => {
+    expect(suma(2, 3)).toBe(5);
+  });
+
+  it('debería manejar números negativos', () => {
+    expect(suma(-1, -2)).toBe(-3);
+    expect(suma(-1, 5)).toBe(4);
+  });
+
+  it('debería manejar ceros', () => {
+    expect(suma(0, 0)).toBe(0);
+    expect(suma(0, 5)).toBe(5);
+  });
+});
+```
+
+### Pruebas de Servicios
+
+Para las funciones que realizan llamadas a API, utilizamos mocks para simular las respuestas:
+
+```javascript
+// candidateService.test.js
+import axios from 'axios';
+import { sendCandidateData } from '../candidateService';
+
+jest.mock('axios');
+
+describe('sendCandidateData', () => {
+  it('debería enviar datos del candidato correctamente', async () => {
+    const mockResponse = { data: { id: 1, name: 'Juan Pérez' } };
+    axios.post.mockResolvedValue(mockResponse);
+    
+    const candidateData = { name: 'Juan Pérez', email: 'juan@example.com' };
+    const result = await sendCandidateData(candidateData);
+    
+    expect(axios.post).toHaveBeenCalledWith(
+      'http://localhost:3010/candidates',
+      candidateData
+    );
+    expect(result).toEqual(mockResponse.data);
+  });
+});
+```
+
+### Pruebas de Componentes React
+
+Para componentes React, utilizamos React Testing Library que nos permite probar el comportamiento del componente desde la perspectiva del usuario:
+
+```javascript
+// SimpleForm.test.js
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import SimpleForm from '../SimpleForm';
+
+describe('SimpleForm', () => {
+  const mockOnSubmit = jest.fn();
+  
+  it('debería mostrar error cuando el email no es válido', () => {
+    render(<SimpleForm onSubmit={mockOnSubmit} />);
+    
+    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'Juan Pérez' } });
+    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'correo-invalido' } });
+    fireEvent.click(screen.getByTestId('submit-button'));
+    
+    expect(screen.getByTestId('error-message')).toHaveTextContent('Por favor, introduce un email válido');
+    expect(mockOnSubmit).not.toHaveBeenCalled();
+  });
+});
+```
+
+## Mocking
+
+El mocking es una técnica fundamental en las pruebas unitarias. Nos permite reemplazar dependencias externas (como APIs, bases de datos, etc.) con versiones simuladas para aislar el código que queremos probar.
+
+Ejemplos de mocks utilizados en nuestro proyecto:
+
+1. **Mock de módulos completos**:
+```javascript
+jest.mock('axios');
+```
+
+2. **Mock de archivos estáticos**:
+```javascript
+jest.mock('../../assets/lti-logo.png', () => 'ruta-mock-logo');
+```
+
+3. **Mock de funciones**:
+```javascript
+const mockOnSubmit = jest.fn();
+```
+
+## Ejecución de Pruebas
+
+Para ejecutar todas las pruebas del proyecto, simplemente ejecutamos:
+
+```bash
+npm test
+```
+
+Para ejecutar pruebas específicas, podemos usar patrones:
+
+```bash
+npm test -- mathUtils
+```
+
+## Buenas Prácticas
+
+1. **Organización**: Mantener las pruebas junto al código que prueban, en un directorio `__tests__`.
+2. **Nombres descriptivos**: Usar nombres descriptivos para las pruebas que indiquen claramente qué se está probando.
+3. **Pruebas independientes**: Cada prueba debe ser independiente y no depender del estado de otras pruebas.
+4. **Limpieza de mocks**: Limpiar los mocks después de cada prueba usando `afterEach(jest.clearAllMocks)`.
+5. **Aserción única**: Cada prueba debería tener un propósito claro y verificar una sola cosa.
+6. **Uso de setup y teardown**: Utilizar `beforeEach` y `afterEach` para código repetitivo de configuración.
+
+## Recursos Adicionales
+
+- [Documentación oficial de Jest](https://jestjs.io/es-ES/docs/getting-started)
+- [Testing Library Documentation](https://testing-library.com/docs/)
+- [Guía de Jest con TypeScript](https://github.com/kulshekhar/ts-jest)
+- [Mockear peticiones HTTP con Jest](https://jestjs.io/docs/mock-functions)

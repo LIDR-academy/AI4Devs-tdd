@@ -1,6 +1,7 @@
 import { Candidate } from '../domain/models/Candidate';
 import { validateCandidateData } from '../application/validator';
 import { addCandidate } from '../application/services/candidateService';
+import { jest, describe, test, expect } from '@jest/globals';
 
 // Mock de prisma para no depender de la base de datos real en las pruebas
 jest.mock('@prisma/client', () => {
@@ -20,7 +21,7 @@ jest.mock('@prisma/client', () => {
 // Mock del modelo Candidate
 jest.mock('../domain/models/Candidate', () => {
   return {
-    Candidate: jest.fn().mockImplementation((data) => {
+    Candidate: jest.fn().mockImplementation((data: any) => {
       return {
         ...data,
         save: jest.fn().mockResolvedValue({ id: 1, ...data }),
@@ -35,7 +36,7 @@ jest.mock('../domain/models/Candidate', () => {
 // Mock de Education, WorkExperience y Resume
 jest.mock('../domain/models/Education', () => {
   return {
-    Education: jest.fn().mockImplementation((data) => {
+    Education: jest.fn().mockImplementation((data: any) => {
       return {
         ...data,
         save: jest.fn().mockResolvedValue({ id: 1, ...data })
@@ -46,7 +47,7 @@ jest.mock('../domain/models/Education', () => {
 
 jest.mock('../domain/models/WorkExperience', () => {
   return {
-    WorkExperience: jest.fn().mockImplementation((data) => {
+    WorkExperience: jest.fn().mockImplementation((data: any) => {
       return {
         ...data,
         save: jest.fn().mockResolvedValue({ id: 1, ...data })
@@ -57,7 +58,7 @@ jest.mock('../domain/models/WorkExperience', () => {
 
 jest.mock('../domain/models/Resume', () => {
   return {
-    Resume: jest.fn().mockImplementation((data) => {
+    Resume: jest.fn().mockImplementation((data: any) => {
       return {
         ...data,
         save: jest.fn().mockResolvedValue({ id: 1, ...data })
@@ -252,10 +253,13 @@ describe('Pruebas para la inserción de candidatos', () => {
         lastName: 'Martínez',
         email: 'ana.martinez@ejemplo.com',
         phone: '612345678',
-        cv: {
-          filePath: '/uploads/cv_ana_martinez.pdf',
-          fileType: 'application/pdf'
-        }
+        resumes: [
+          {
+            filePath: 'uploads/cv_ana.pdf',
+            fileType: 'application/pdf',
+            originalName: 'cv_ana.pdf'
+          }
+        ]
       };
       
       // Acción
@@ -267,21 +271,26 @@ describe('Pruebas para la inserción de candidatos', () => {
       expect(resultado.firstName).toBe('Ana');
     });
     
-    test('debería manejar errores de duplicación de email', async () => {
-      // Preparación
+    test('debería rechazar un candidato con email duplicado', async () => {
+      // Preparación: Mock para simular un candidato existente con el mismo email
+      const { PrismaClient } = require('@prisma/client');
+      const prisma = new PrismaClient();
+      
+      // Cambiar el mock para que devuelva un candidato existente con el mismo email
+      prisma.candidate.findUnique = jest.fn().mockResolvedValue({
+        id: 2,
+        email: 'duplicado@ejemplo.com'
+      });
+      
       const candidatoDuplicado = {
-        firstName: 'Juan',
-        lastName: 'Pérez',
-        email: 'juan.perez@ejemplo.com',
+        firstName: 'Pedro',
+        lastName: 'Gómez',
+        email: 'duplicado@ejemplo.com',
         phone: '612345678'
       };
       
-      // Mockear el comportamiento de error
-      const mockCandidate = new Candidate(candidatoDuplicado);
-      mockCandidate.save = jest.fn().mockRejectedValue({ code: 'P2002' });
-      
       // Acción y verificación
-      await expect(addCandidate(candidatoDuplicado)).rejects.toThrow('The email already exists in the database');
+      await expect(addCandidate(candidatoDuplicado)).rejects.toThrow('Candidate with this email already exists');
     });
   });
 }); 
