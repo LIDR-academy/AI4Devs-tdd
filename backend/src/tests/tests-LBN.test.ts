@@ -206,7 +206,8 @@ describe('Tests de servicios (candidateService.ts)', () => {
     
     // Mockear el constructor de Candidate
     (Candidate as unknown as jest.Mock).mockImplementation(() => ({
-      save: jest.fn().mockResolvedValue(mockSavedCandidate as any),
+      // @ts-expect-error - Ignorar error de tipado en mock
+      save: jest.fn().mockResolvedValue(mockSavedCandidate),
       education: [],
       workExperience: [],
       resumes: []
@@ -214,15 +215,18 @@ describe('Tests de servicios (candidateService.ts)', () => {
     
     // Mockear los otros constructores
     (Education as unknown as jest.Mock).mockImplementation(() => ({
-      save: jest.fn().mockResolvedValue({} as any)
+      // @ts-expect-error - Ignorar error de tipado en mock
+      save: jest.fn().mockResolvedValue({})
     }));
     
     (WorkExperience as unknown as jest.Mock).mockImplementation(() => ({
-      save: jest.fn().mockResolvedValue({} as any)
+      // @ts-expect-error - Ignorar error de tipado en mock
+      save: jest.fn().mockResolvedValue({})
     }));
     
     (Resume as unknown as jest.Mock).mockImplementation(() => ({
-      save: jest.fn().mockResolvedValue({} as any)
+      // @ts-expect-error - Ignorar error de tipado en mock
+      save: jest.fn().mockResolvedValue({})
     }));
   });
 
@@ -301,7 +305,8 @@ describe('Tests de servicios (candidateService.ts)', () => {
     // Simular error de duplicación de email
     const prismaError = { code: 'P2002' };
     (Candidate as unknown as jest.Mock).mockImplementation(() => ({
-      save: jest.fn().mockRejectedValue(prismaError as any),
+      // @ts-expect-error - Ignorar error de tipado en mock
+      save: jest.fn().mockRejectedValue(prismaError),
       education: [],
       workExperience: [],
       resumes: []
@@ -323,7 +328,8 @@ describe('Tests de servicios (candidateService.ts)', () => {
     // Simular error de conexión
     const dbError = new Error('Database connection error');
     (Candidate as unknown as jest.Mock).mockImplementation(() => ({
-      save: jest.fn().mockRejectedValue(dbError as any),
+      // @ts-expect-error - Ignorar error de tipado en mock
+      save: jest.fn().mockRejectedValue(dbError),
       education: [],
       workExperience: [],
       resumes: []
