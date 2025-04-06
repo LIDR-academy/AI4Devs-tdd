@@ -27,7 +27,7 @@ async function addCandidate(candidateData) {
     });
     
     if (existingCandidate) {
-      throw { code: 'P2002' }; // Código que simula un error de duplicación en Prisma
+      throw new Error('Candidate with this email already exists');
     }
     
     // En los tests, vamos a usar directamente Prisma
@@ -76,16 +76,19 @@ async function addCandidate(candidateData) {
     }
     
     // Procesar CV (si existe)
-    if (candidateData.cv) {
-      // Crear directamente en la base de datos
-      await prisma.resume.create({
-        data: {
-          filePath: candidateData.cv.filePath,
-          fileType: candidateData.cv.fileType,
-          uploadDate: new Date(),
-          candidateId: savedCandidate.id
-        }
-      });
+    if (candidateData.resumes && candidateData.resumes.length > 0) {
+      for (const resumeData of candidateData.resumes) {
+        // Crear directamente en la base de datos
+        await prisma.resume.create({
+          data: {
+            filePath: resumeData.filePath,
+            fileType: resumeData.fileType,
+            originalName: resumeData.originalName || '',
+            uploadDate: new Date(),
+            candidateId: savedCandidate.id
+          }
+        });
+      }
     }
     
     // Retornar el candidato con todos sus datos añadidos
@@ -94,7 +97,7 @@ async function addCandidate(candidateData) {
   } catch (error) {
     // Manejar errores específicos
     if (error.code === 'P2002') {
-      throw new Error('The email already exists in the database');
+      throw new Error('Candidate with this email already exists');
     }
     
     // Relanzar cualquier otro error

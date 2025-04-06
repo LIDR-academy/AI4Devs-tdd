@@ -4,14 +4,42 @@ const { addCandidate } = require('../application/services/candidateService');
 
 // Mock de prisma para no depender de la base de datos real en las pruebas
 jest.mock('@prisma/client', () => {
+  // Definir el mock primero, antes de usarlo
   const mockPrismaClient = {
     candidate: {
-      create: jest.fn().mockResolvedValue({ id: 1, firstName: 'Mock', lastName: 'User', email: 'mock@example.com' }),
+      create: jest.fn().mockResolvedValue({ 
+        id: 1, 
+        firstName: 'Mock', 
+        lastName: 'User', 
+        email: 'mock@example.com' 
+      }),
       update: jest.fn(),
       findUnique: jest.fn().mockResolvedValue(null) // Por defecto, no hay candidato existente
     },
+    education: {
+      create: jest.fn().mockResolvedValue({ 
+        id: 1, 
+        institution: 'Mock University', 
+        title: 'Mock Degree' 
+      })
+    },
+    workExperience: {
+      create: jest.fn().mockResolvedValue({ 
+        id: 1, 
+        company: 'Mock Company', 
+        position: 'Mock Position' 
+      })
+    },
+    resume: {
+      create: jest.fn().mockResolvedValue({ 
+        id: 1, 
+        filePath: 'mock/path', 
+        fileType: 'application/pdf' 
+      })
+    },
     $disconnect: jest.fn()
   };
+  
   return {
     PrismaClient: jest.fn(() => mockPrismaClient)
   };
@@ -66,7 +94,22 @@ jest.mock('../domain/models/Resume', () => {
   };
 });
 
+// Obtener una referencia al objeto mock para usarlo en las pruebas
+const mockPrismaClient = require('@prisma/client').PrismaClient();
+
 describe('Pruebas para la inserción de candidatos', () => {
+  
+  // Limpiar los mocks antes de cada prueba
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockPrismaClient.candidate.create.mockResolvedValue({ 
+      id: 1, 
+      firstName: 'Mock', 
+      lastName: 'User', 
+      email: 'mock@example.com' 
+    });
+    mockPrismaClient.candidate.findUnique.mockResolvedValue(null);
+  });
   
   // Familia 1: Tests para la validación de datos del formulario
   describe('Validación de datos del candidato', () => {
@@ -172,6 +215,16 @@ describe('Pruebas para la inserción de candidatos', () => {
   describe('Guardado de candidatos en la base de datos', () => {
     
     test('debería guardar correctamente un candidato válido', async () => {
+      // Configurar el mock para este test
+      mockPrismaClient.candidate.create.mockResolvedValue({
+        id: 1,
+        firstName: 'Juan',
+        lastName: 'Pérez',
+        email: 'juan.perez@ejemplo.com',
+        phone: '612345678',
+        address: 'Calle Ejemplo 123'
+      });
+      
       // Preparación
       const candidatoValido = {
         firstName: 'Juan',
@@ -193,6 +246,14 @@ describe('Pruebas para la inserción de candidatos', () => {
     });
     
     test('debería guardar un candidato con educación correctamente', async () => {
+      // Configurar mocks para este test
+      mockPrismaClient.candidate.create.mockResolvedValue({
+        id: 1,
+        firstName: 'María',
+        lastName: 'García',
+        email: 'maria.garcia@ejemplo.com'
+      });
+      
       // Preparación
       const candidatoConEducacion = {
         firstName: 'María',
@@ -216,9 +277,18 @@ describe('Pruebas para la inserción de candidatos', () => {
       expect(resultado).toBeDefined();
       expect(resultado.id).toBe(1);
       expect(resultado.firstName).toBe('María');
+      expect(mockPrismaClient.education.create).toHaveBeenCalled();
     });
     
     test('debería guardar un candidato con experiencia laboral correctamente', async () => {
+      // Configurar mocks para este test
+      mockPrismaClient.candidate.create.mockResolvedValue({
+        id: 1,
+        firstName: 'Carlos',
+        lastName: 'Rodríguez',
+        email: 'carlos.rodriguez@ejemplo.com'
+      });
+      
       // Preparación
       const candidatoConExperiencia = {
         firstName: 'Carlos',
@@ -243,9 +313,18 @@ describe('Pruebas para la inserción de candidatos', () => {
       expect(resultado).toBeDefined();
       expect(resultado.id).toBe(1);
       expect(resultado.firstName).toBe('Carlos');
+      expect(mockPrismaClient.workExperience.create).toHaveBeenCalled();
     });
     
     test('debería guardar un candidato con CV correctamente', async () => {
+      // Configurar mocks para este test
+      mockPrismaClient.candidate.create.mockResolvedValue({
+        id: 1,
+        firstName: 'Ana',
+        lastName: 'Martínez',
+        email: 'ana.martinez@ejemplo.com'
+      });
+      
       // Preparación
       const candidatoConCV = {
         firstName: 'Ana',
@@ -268,15 +347,12 @@ describe('Pruebas para la inserción de candidatos', () => {
       expect(resultado).toBeDefined();
       expect(resultado.id).toBe(1);
       expect(resultado.firstName).toBe('Ana');
+      expect(mockPrismaClient.resume.create).toHaveBeenCalled();
     });
     
     test('debería rechazar un candidato con email duplicado', async () => {
-      // Preparación: Mock para simular un candidato existente con el mismo email
-      const { PrismaClient } = require('@prisma/client');
-      const prisma = new PrismaClient();
-      
-      // Cambiar el mock para que devuelva un candidato existente con el mismo email
-      prisma.candidate.findUnique.mockResolvedValueOnce({
+      // Configurar el mock para este test específico
+      mockPrismaClient.candidate.findUnique.mockResolvedValueOnce({
         id: 2,
         email: 'duplicado@ejemplo.com'
       });
