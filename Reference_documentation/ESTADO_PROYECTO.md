@@ -1,6 +1,6 @@
 # Estado del Proyecto de Testing con Jest
 
-## Estado Actual (06-04-2023)
+## Estado Actual (06-04-2026)
 
 ¡Excelente progreso! Hemos logrado:
 
@@ -29,7 +29,7 @@
    - Implementado mocking para simular la interacción con la base de datos
    - Cubiertos casos de error como duplicación de email
 
-## Últimas Actualizaciones (06-04-2023)
+## Últimas Actualizaciones (06-04-2026) por: ANDRESKAMILO
 
 1. **Mejoras en la implementación de tests**:
    - Conversión de los tests de TypeScript a JavaScript para simplificar la ejecución

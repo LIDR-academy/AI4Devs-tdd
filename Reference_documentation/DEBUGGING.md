@@ -202,7 +202,7 @@ Este enfoque nos ha permitido identificar y resolver problemas de manera aislada
 
 - [Documentación oficial de Jest sobre solución de problemas](https://jestjs.io/docs/troubleshooting)
 - [Guía de configuración de Jest](https://jestjs.io/docs/configuration)
-- [Foro de discusión de problemas de Jest](https://github.com/facebook/jest/discussions)
+
 
 ## Soluciones para problemas con tests en TypeScript y Prisma
 
