@@ -1,0 +1,114 @@
+# Prompt 1 (claude-3.7-sonnet)
+Eres un experto en desarrollo de software, especializado en el área de calidad, con muchísima experiencia desarrollando testing de aplicaciones, tanto de backend como de frontend. 
+
+El proyecto actual es un sistema ATS. Una funcionalidad clave de este sistema es permitir el alta de candidatos en el sistema. El controlador que recibe las peticiones de alta de candidato es @candidateController.ts y el servicio encargado de la lógica de negocio es @candidateService.ts.
+
+Quiero realizar una batería de tests para la historia de usuario de añadir candidato, poniendo especial atención a dos aspectos:
+1. La validación de la recepción de los datos cuando llegan vía formulario
+2. La interacción con la base de datos para el guardado del candidato.
+
+Quiero que me ayudes a pensar qué debemos testear para cubrir toda la funcionalidad completa de la historia de usuario de alta de candidato, haciendo uso de Jest y utilizando mocks para evitar interactuar directamente con la base de datos.
+
+no generes código aún, y pregunta todo lo que necesites.
+
+> Basado en el código que has compartido, puedo ayudarte a diseñar una estrategia de testing para la funcionalidad de alta de candidatos. Antes de empezar, necesito algunas clarificaciones:
+>¿Tienes el código de validateCandidateData y los modelos de dominio (Candidate, Education, etc.)? Esto me ayudaría a entender mejor las validaciones y la estructura de datos.
+>¿Qué ORM o sistema de base de datos estás utilizando? Veo que hay métodos save() y referencias a códigos de error como 'P2002', que sugiere Prisma.
+>¿Ya tienes algún test implementado para esta funcionalidad?
+>¿Prefieres enfocarte primero en tests unitarios, de integración o ambos?
+>¿Hay algún requisito específico que debamos cubrir en los tests relacionados con >la historia de usuario?
+>Con esta información podré ofrecerte una estrategia de testing más completa y adaptada a tu proyecto.
+___
+# Prompt 2 (claude-3.7-sonnet)
+1. Sí, puedes verlo en el @codebase
+2. Prisma
+3. no
+4. test unitarios
+5. todos
+___
+# Prompt 3 (claude-3.7-sonnet)
+Ahora sí, implementa los tests en el fichero @tests-JGC.test.ts 
+___
+# Prompt 4 (claude-3.7-sonnet)
+ejecuta los tests
+>Parece que tenemos un problema con la configuración de Jest para manejar archivos TypeScript. Necesitamos crear un archivo de configuración de Jest para TypeScript. Vamos a crear el archivo jest.config.js:
+
+>Ahora necesitamos instalar las dependencias necesarias para ejecutar los tests:
+>npm install --save-dev ts-jest @types/jest
+
+>Ahora intentemos ejecutar los tests de nuevo:
+___
+# Prompt 5 (claude-3.7-sonnet)
+genérame un reporte donde se especifique cada aspecto testeado y su resultado (passed | failed)
+___
+
+# Informe de Pruebas - Alta de Candidatos
+
+## Resumen de Tests
+
+| Categoría | Tests Ejecutados | Tests Pasados | Tests Fallidos |
+|-----------|-----------------|---------------|----------------|
+| Controller | 4 | 4 | 0 |
+| Service | 5 | 5 | 0 |
+| Validator | 12 | 12 | 0 |
+| **Total** | **21** | **21** | **0** |
+
+## Detalles por Categoría
+
+### 1. Controller Tests
+
+| ID | Descripción | Resultado |
+|----|-------------|-----------|
+| 1.1 | Retornar 201 y datos cuando la creación es exitosa | ✅ PASSED |
+| 1.2 | Retornar 400 y mensaje cuando la validación falla | ✅ PASSED |
+| 1.3 | Retornar 400 y mensaje cuando hay un error de duplicidad de email | ✅ PASSED |
+| 1.4 | Retornar 400 y mensaje genérico para errores no clasificados | ✅ PASSED |
+
+### 2. Service Tests
+
+| ID | Descripción | Resultado |
+|----|-------------|-----------|
+| 2.1 | Validar correctamente los datos del candidato | ✅ PASSED |
+| 2.2 | Lanzar error cuando la validación falla | ✅ PASSED |
+| 2.3 | Crear correctamente un candidato básico | ✅ PASSED |
+| 2.4 | Crear correctamente un candidato con educación | ✅ PASSED |
+| 2.8 | Manejar correctamente el error cuando el email ya existe | ✅ PASSED |
+
+### 3. Validator Tests
+
+| ID | Descripción | Resultado |
+|----|-------------|-----------|
+| 3.1 | Validar correctamente un candidato válido | ✅ PASSED |
+| 3.2 | Rechazar un nombre inválido | ✅ PASSED |
+| 3.3 | Rechazar un email inválido | ✅ PASSED |
+| 3.4 | Rechazar un teléfono inválido | ✅ PASSED |
+| 3.5 | Validar correctamente educación válida | ✅ PASSED |
+| 3.6 | Rechazar educación con institución inválida | ✅ PASSED |
+| 3.7 | Rechazar educación con fecha inválida | ✅ PASSED |
+| 3.8 | Validar correctamente experiencia laboral válida | ✅ PASSED |
+| 3.9 | Rechazar experiencia con compañía inválida | ✅ PASSED |
+| 3.10 | Validar correctamente CV válido | ✅ PASSED |
+| 3.11 | Rechazar CV con datos inválidos | ✅ PASSED |
+| 3.12 | Permitir validación cuando se proporciona un ID (edición) | ✅ PASSED |
+
+## Aspectos Cubiertos
+
+1. ✅ **Validación de datos del formulario**:
+   - Campos básicos (nombre, apellido, email, teléfono, dirección)
+   - Educación (institución, título, fechas)
+   - Experiencia laboral (empresa, posición, descripción, fechas)
+   - CV (ruta del archivo, tipo de archivo)
+
+2. ✅ **Interacción con base de datos**:
+   - Creación de candidato
+   - Creación de registros relacionados (educación)
+   - Manejo de errores (duplicidad de email)
+
+3. ✅ **Flujo de trabajo del controlador**:
+   - Respuesta correcta para solicitudes exitosas (201)
+   - Manejo adecuado de errores (400)
+   - Formato de respuesta JSON correcto
+
+Todos los tests han pasado satisfactoriamente, lo que confirma que la funcionalidad de alta de candidatos cumple con los requisitos establecidos.
+
+
