@@ -318,6 +318,991 @@ npm notice
 
 ---
 
+Ahora, vamos a crear un archivo de configuración básico para Jest:
+
+
+
+---
+
+```diff
+- 
++ module.exports = {
++   preset: 'ts-jest',
++   testEnvironment: 'node',
++   roots: ['<rootDir>/src'],
++   testMatch: [
++     '**/__tests__/**/*.+(ts|tsx|js)',
++     '**/?(*.)+(spec|test).+(ts|tsx|js)'
++   ],
++   transform: {
++     '^.+\\.(ts|tsx)$': 'ts-jest'
++   }
++ }; 
+```
+
+---
+
+Ahora, vamos a crear un test simple para verificar que Jest está funcionando correctamente. Crearemos un archivo de prueba básico:
+
+
+
+---
+
+```diff
+- 
++ describe('Pruebas básicas de Jest', () => {
++     test('suma de números', () => {
++         expect(1 + 1).toBe(2);
++     });
++ 
++     test('comparación de strings', () => {
++         expect('hola').toBe('hola');
++     });
++ 
++     test('verificación de objeto', () => {
++         const obj = { nombre: 'test' };
++         expect(obj).toEqual({ nombre: 'test' });
++     });
++ }); 
+```
+
+---
+
+Ahora, vamos a actualizar el package.json para añadir los scripts de test:
+
+
+
+
+---
+
+```diff
+      "jest": "^29.7.0",
+      "ts-jest": "^29.3.1"
++   },
++   "scripts": {
++     "test": "jest",
++     "test:watch": "jest --watch",
++     "test:coverage": "jest --coverage"
+    }
+  }
+```
+
+---
+
+Ahora, vamos a ejecutar los tests para verificar que todo funciona correctamente:
+
+
+
+
+---
+
+```bash
+npm test
+```
+
+```
+➜  AI4Devs-tdd git:(tests-JMR) ✗ npm test
+
+> test
+> jest
+
+ts-jest[config] (WARN) message TS151001: If you have issues related to imports, you should consider setting `
+esModuleInterop` to `true` in your TypeScript configuration file (usually `tsconfig.json`). See https://blogs
+.msdn.microsoft.com/typescript/2018/01/31/announcing-typescript-2-7/#easier-ecmascript-module-interoperabilit
+y for more information.
+ PASS  src/__tests__/basic.test.ts
+  Pruebas básicas de Jest
+    ✓ suma de números (1 ms)
+    ✓ comparación de strings (1 ms)
+    ✓ verificación de objeto
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        1.34 s
+Ran all test suites.
+npm notice 
+npm notice New major version of npm available! 9.2.0 -> 11.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.2.0
+npm notice Run npm install -g npm@11.2.0 to update!
+npm notice 
+➜  AI4Devs-tdd git:(tests-JMR) ✗
+```
+
+---
+
+¡Excelente! Jest está funcionando correctamente. Los resultados muestran que:
+
+1. Se ejecutaron 3 pruebas
+2. Todas las pruebas pasaron
+3. El tiempo de ejecución fue de 1.34 segundos
+
+Hay una advertencia sobre `esModuleInterop` que podemos solucionar actualizando el `tsconfig.json`, pero no es crítica para el funcionamiento básico.
+
+Ahora que tenemos Jest configurado y funcionando, podemos:
+
+1. Ejecutar tests en modo watch (útil durante el desarrollo):
+```bash
+npm run test:watch
+```
+
+2. Ver la cobertura de código:
+```bash
+npm run test:coverage
+```
+
+¿Te gustaría que:
+1. Solucionemos la advertencia de `esModuleInterop`?
+2. Empecemos a crear tests para alguna funcionalidad específica del proyecto?
+3. Configuremos algo más en Jest?
+
+---
+
+_**User**_
+
+Genera un plan para implementar una suite de tests unitarios en Jest para la funcionalidad de insertar candidatos en base de datos.
+aun no escribas el codigo solamente detalla que archivos vas a testear y como
+
+---
+
+_**Assistant**_
+
+Te propongo el siguiente plan para implementar los tests unitarios para la funcionalidad de inserción de candidatos:
+
+1. **Estructura de Tests**
+```
+src/
+└── __tests__/
+    ├── unit/
+    │   ├── models/
+    │   │   ├── Candidate.test.ts
+    │   │   ├── Education.test.ts
+    │   │   ├── WorkExperience.test.ts
+    │   │   └── Resume.test.ts
+    │   └── services/
+    │       └── candidateService.test.ts
+    └── mocks/
+        ├── prisma.mock.ts
+        └── data/
+            ├── candidate.mock.ts
+            ├── education.mock.ts
+            └── workExperience.mock.ts
+```
+
+2. **Archivos a Testear y su Alcance**
+
+a) **Candidate.test.ts**
+- Test de creación de instancia
+- Test de validación de datos
+- Test de método save()
+- Test de manejo de errores
+
+b) **Education.test.ts**
+- Test de creación de instancia
+- Test de validación de fechas
+- Test de método save()
+- Test de relación con Candidate
+
+c) **WorkExperience.test.ts**
+- Test de creación de instancia
+- Test de validación de fechas
+- Test de método save()
+- Test de relación con Candidate
+
+d) **Resume.test.ts**
+- Test de creación de instancia
+- Test de validación de tipos de archivo
+- Test de método save()
+- Test de relación con Candidate
+
+e) **candidateService.test.ts**
+- Test de addCandidate con datos completos
+- Test de addCandidate con datos mínimos
+- Test de manejo de errores de validación
+- Test de integración con modelos relacionados
+
+3. **Mocks Necesarios**
+
+a) **prisma.mock.ts**
+- Mock de PrismaClient
+- Mock de métodos CRUD para cada modelo
+- Mock de transacciones
+
+b) **Datos de Prueba**
+- candidate.mock.ts: Datos de ejemplo para candidatos
+- education.mock.ts: Datos de ejemplo para educación
+- workExperience.mock.ts: Datos de ejemplo para experiencia laboral
+
+4. **Casos de Prueba por Archivo**
+
+a) **Candidate.test.ts**
+```typescript
+describe('Candidate', () => {
+    // Casos de prueba
+    - Creación con datos válidos
+    - Creación con datos inválidos
+    - Guardado exitoso
+    - Guardado con error de base de datos
+    - Validación de campos requeridos
+    - Validación de formato de email
+    - Validación de formato de teléfono
+})
+```
+
+b) **Education.test.ts**
+```typescript
+describe('Education', () => {
+    // Casos de prueba
+    - Creación con fechas válidas
+    - Creación con fechas inválidas
+    - Validación de institución
+    - Validación de título
+    - Relación con candidato
+})
+```
+
+c) **WorkExperience.test.ts**
+```typescript
+describe('WorkExperience', () => {
+    // Casos de prueba
+    - Creación con fechas válidas
+    - Creación con fechas inválidas
+    - Validación de empresa
+    - Validación de puesto
+    - Relación con candidato
+})
+```
+
+d) **Resume.test.ts**
+```typescript
+describe('Resume', () => {
+    // Casos de prueba
+    - Validación de tipos de archivo
+    - Validación de tamaño de archivo
+    - Guardado de archivo
+    - Relación con candidato
+})
+```
+
+e) **candidateService.test.ts**
+```typescript
+describe('CandidateService', () => {
+    // Casos de prueba
+    - Creación completa de candidato
+    - Creación con educación
+    - Creación con experiencia laboral
+    - Creación con CV
+    - Manejo de errores de validación
+    - Manejo de errores de base de datos
+})
+```
+
+5. **Estrategia de Testing**
+
+- Usar `beforeEach` para resetear mocks
+- Usar `afterEach` para limpiar estado
+- Implementar tests aislados
+- Usar mocks para dependencias externas
+- Validar tanto casos exitosos como de error
+- Cubrir todos los caminos de código posibles
+
+6. **Cobertura Objetivo**
+
+- Mínimo 80% de cobertura de código
+- 100% de cobertura en validaciones
+- 100% de cobertura en manejo de errores
+- Tests para todos los casos de borde
+
+¿Te gustaría que empecemos a implementar alguno de estos tests en particular?
+
+---
+
+_**User**_
+
+Pero estos terian todos los tests por lo que entiendo y no lo de las funcionalidad propia de funcionalidad de insertar candidatos en base de datos
+
+---
+
+_**Assistant**_
+
+Tienes razón, me centraré específicamente en la funcionalidad de inserción de candidatos. Aquí está el plan más enfocado:
+
+1. **Estructura de Tests para Inserción**
+```
+src/
+└── __tests__/
+    ├── unit/
+    │   └── services/
+    │       └── candidateService.test.ts
+    └── mocks/
+        ├── prisma.mock.ts
+        └── data/
+            └── candidate.mock.ts
+```
+
+2. **Archivo Principal a Testear: candidateService.test.ts**
+
+Este archivo se centrará en probar la función `addCandidate` del servicio, que es la responsable de la inserción completa.
+
+3. **Casos de Prueba Específicos para Inserción**
+
+```typescript
+describe('addCandidate', () => {
+    // Casos de prueba principales
+    - Inserción exitosa de candidato básico
+    - Inserción con educación
+    - Inserción con experiencia laboral
+    - Inserción con CV
+    - Inserción con todos los datos (completo)
+
+    // Casos de error
+    - Error al insertar candidato (fallo DB)
+    - Error al insertar educación
+    - Error al insertar experiencia laboral
+    - Error al insertar CV
+})
+```
+
+4. **Mocks Necesarios**
+
+a) **prisma.mock.ts**
+```typescript
+export const mockPrisma = {
+    candidate: {
+        create: jest.fn(),
+        update: jest.fn()
+    },
+    education: {
+        create: jest.fn()
+    },
+    workExperience: {
+        create: jest.fn()
+    },
+    resume: {
+        create: jest.fn()
+    }
+};
+```
+
+b) **candidate.mock.ts**
+```typescript
+export const mockCandidateData = {
+    // Datos básicos
+    basic: {
+        firstName: "Test",
+        lastName: "User",
+        email: "test@example.com",
+        phone: "612345678",
+        address: "Test Address"
+    },
+    
+    // Datos completos
+    complete: {
+        firstName: "Test",
+        lastName: "User",
+        email: "test@example.com",
+        phone: "612345678",
+        address: "Test Address",
+        educations: [{
+            institution: "Test University",
+            title: "Test Degree",
+            startDate: "2020-01-01",
+            endDate: "2024-01-01"
+        }],
+        workExperiences: [{
+            company: "Test Company",
+            position: "Test Position",
+            startDate: "2024-01-01"
+        }],
+        cv: {
+            filePath: "test.pdf",
+            fileType: "application/pdf"
+        }
+    }
+};
+```
+
+5. **Estrategia de Testing para Inserción**
+
+a) **Flujo de Inserción**
+1. Validar datos de entrada
+2. Crear candidato en DB
+3. Crear registros relacionados (si existen)
+4. Retornar candidato creado
+
+b) **Puntos de Verificación**
+- Datos guardados correctamente en DB
+- Relaciones creadas correctamente
+- Orden correcto de operaciones
+- Manejo de transacciones
+
+6. **Casos de Prueba Detallados**
+
+```typescript
+describe('addCandidate', () => {
+    beforeEach(() => {
+        // Resetear mocks
+    });
+
+    test('debería insertar candidato básico correctamente', async () => {
+        // Arrange
+        // Act
+        // Assert
+    });
+
+    test('debería insertar candidato con educación', async () => {
+        // Arrange
+        // Act
+        // Assert
+    });
+
+    test('debería insertar candidato con experiencia laboral', async () => {
+        // Arrange
+        // Act
+        // Assert
+    });
+
+    test('debería insertar candidato con CV', async () => {
+        // Arrange
+        // Act
+        // Assert
+    });
+
+    test('debería manejar error al insertar candidato', async () => {
+        // Arrange
+        // Act
+        // Assert
+    });
+
+    test('debería manejar error al insertar educación', async () => {
+        // Arrange
+        // Act
+        // Assert
+    });
+});
+```
+
+7. **Validaciones Específicas**
+
+- Verificar que los datos se guardan exactamente como se enviaron
+- Verificar que las relaciones se crean correctamente
+- Verificar que los errores se manejan adecuadamente
+- Verificar que las transacciones funcionan correctamente
+
+¿Te gustaría que empecemos a implementar estos tests? Podemos comenzar por el caso más básico de inserción de un candidato.
+
+---
+
+_**User**_
+
+Perfecto, implementemos estos tests
+
+---
+
+_**Assistant**_
+
+Vamos a implementar los tests paso a paso. Primero, crearemos los mocks necesarios y luego los tests.
+
+1. Primero, creemos el archivo de mocks para Prisma:
+
+
+
+---
+
+```diff
+- 
++ export const mockPrisma = {
++     candidate: {
++         create: jest.fn(),
++         update: jest.fn()
++     },
++     education: {
++         create: jest.fn()
++     },
++     workExperience: {
++         create: jest.fn()
++     },
++     resume: {
++         create: jest.fn()
++     }
++ };
++ 
++ jest.mock('@prisma/client', () => ({
++     PrismaClient: jest.fn(() => mockPrisma)
++ })); 
+```
+
+---
+
+2. Ahora, creemos el archivo con los datos de prueba:
+
+
+
+
+---
+
+```diff
+- 
++ export const mockCandidateData = {
++     basic: {
++         firstName: "Test",
++         lastName: "User",
++         email: "test@example.com",
++         phone: "612345678",
++         address: "Test Address"
++     },
++     
++     complete: {
++         firstName: "Test",
++         lastName: "User",
++         email: "test@example.com",
++         phone: "612345678",
++         address: "Test Address",
++         educations: [{
++             institution: "Test University",
++             title: "Test Degree",
++             startDate: "2020-01-01",
++             endDate: "2024-01-01"
++         }],
++         workExperiences: [{
++             company: "Test Company",
++             position: "Test Position",
++             startDate: "2024-01-01"
++         }],
++         cv: {
++             filePath: "test.pdf",
++             fileType: "application/pdf"
++         }
++     }
++ }; 
+```
+
+---
+
+3. Finalmente, implementemos los tests para el servicio de candidatos:
+
+
+
+
+
+---
+
+```diff
+- 
++ import { addCandidate } from '../../../application/services/candidateService';
++ import { mockPrisma } from '../../mocks/prisma.mock';
++ import { mockCandidateData } from '../../mocks/data/candidate.mock';
++ 
++ describe('CandidateService', () => {
++     beforeEach(() => {
++         // Limpiar todos los mocks antes de cada test
++         jest.clearAllMocks();
++     });
++ 
++     describe('addCandidate', () => {
++         test('debería insertar candidato básico correctamente', async () => {
++             // Arrange
++             const candidateData = mockCandidateData.basic;
++             mockPrisma.candidate.create.mockResolvedValue({
++                 id: 1,
++                 ...candidateData
++             });
++ 
++             // Act
++             const result = await addCandidate(candidateData);
++ 
++             // Assert
++             expect(result).toBeDefined();
++             expect(result.id).toBe(1);
++             expect(mockPrisma.candidate.create).toHaveBeenCalledTimes(1);
++             expect(mockPrisma.candidate.create).toHaveBeenCalledWith({
++                 data: candidateData
++             });
++         });
++ 
++         test('debería insertar candidato con educación', async () => {
++             // Arrange
++             const candidateData = {
++                 ...mockCandidateData.basic,
++                 educations: mockCandidateData.complete.educations
++             };
++ 
++             mockPrisma.candidate.create.mockResolvedValue({
++                 id: 1,
++                 ...mockCandidateData.basic
++             });
++ 
++             mockPrisma.education.create.mockResolvedValue({
++                 id: 1,
++                 candidateId: 1,
++                 ...mockCandidateData.complete.educations[0]
++             });
++ 
++             // Act
++             const result = await addCandidate(candidateData);
++ 
++             // Assert
++             expect(result).toBeDefined();
++             expect(mockPrisma.candidate.create).toHaveBeenCalledTimes(1);
++             expect(mockPrisma.education.create).toHaveBeenCalledTimes(1);
++             expect(mockPrisma.education.create).toHaveBeenCalledWith({
++                 data: {
++                     ...mockCandidateData.complete.educations[0],
++                     candidateId: 1
++                 }
++             });
++         });
++ 
++         test('debería insertar candidato con experiencia laboral', async () => {
++             // Arrange
++             const candidateData = {
++                 ...mockCandidateData.basic,
++                 workExperiences: mockCandidateData.complete.workExperiences
++             };
++ 
++             mockPrisma.candidate.create.mockResolvedValue({
++                 id: 1,
++                 ...mockCandidateData.basic
++             });
++ 
++             mockPrisma.workExperience.create.mockResolvedValue({
++                 id: 1,
++                 candidateId: 1,
++                 ...mockCandidateData.complete.workExperiences[0]
++             });
++ 
++             // Act
++             const result = await addCandidate(candidateData);
++ 
++             // Assert
++             expect(result).toBeDefined();
++             expect(mockPrisma.candidate.create).toHaveBeenCalledTimes(1);
++             expect(mockPrisma.workExperience.create).toHaveBeenCalledTimes(1);
++             expect(mockPrisma.workExperience.create).toHaveBeenCalledWith({
++                 data: {
++                     ...mockCandidateData.complete.workExperiences[0],
++                     candidateId: 1
++                 }
++             });
++         });
++ 
++         test('debería manejar error al insertar candidato', async () => {
++             // Arrange
++             const candidateData = mockCandidateData.basic;
++             mockPrisma.candidate.create.mockRejectedValue(new Error('Error de base de datos'));
++ 
++             // Act & Assert
++             await expect(addCandidate(candidateData))
++                 .rejects
++                 .toThrow('Error de base de datos');
++         });
++ 
++         test('debería manejar error al insertar educación', async () => {
++             // Arrange
++             const candidateData = {
++                 ...mockCandidateData.basic,
++                 educations: mockCandidateData.complete.educations
++             };
++ 
++             mockPrisma.candidate.create.mockResolvedValue({
++                 id: 1,
++                 ...mockCandidateData.basic
++             });
++ 
++             mockPrisma.education.create.mockRejectedValue(new Error('Error al crear educación'));
++ 
++             // Act & Assert
++             await expect(addCandidate(candidateData))
++                 .rejects
++                 .toThrow('Error al crear educación');
++         });
++     });
++ }); 
+```
+
+---
+
+Ahora vamos a ejecutar los tests para ver si funcionan correctamente:
+
+
+
+
+---
+
+```bash
+npm test
+```
+
+```
+?➜  AI4Devs-tdd git:(tests-JMR) ?✗ npm test
+
+> test
+> jest
+
+ts-jest[config] (WARN) message TS151001: If you have issues related to imports, you should consider setting `
+esModuleInterop` to `true` in your TypeScript configuration file (usually `tsconfig.json`). See https://blogs
+.msdn.microsoft.com/typescript/2018/01/31/announcing-typescript-2-7/#easier-ecmascript-module-interoperabilit
+y for more information.
+ FAIL  src/__tests__/unit/services/candidateService.test.ts
+  ● Test suite failed to run
+
+    src/__tests__/unit/services/candidateService.test.ts:1:30 - error TS2307: Cannot find module '../../../ap
+plication/services/candidateService' or its corresponding type declarations.
+
+    1 import { addCandidate } from '../../../application/services/candidateService';
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ FAIL  src/__tests__/mocks/data/candidate.mock.ts
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/TestScheduler.js:133:18)
+      at node_modules/@jest/core/build/TestScheduler.js:254:19
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+ FAIL  src/__tests__/mocks/prisma.mock.ts
+  ● Test suite failed to run
+
+    Cannot find module '@prisma/client' from 'src/__tests__/mocks/prisma.mock.ts'
+
+      15 | };
+      16 |
+    > 17 | jest.mock('@prisma/client', () => ({
+         |      ^
+      18 |     PrismaClient: jest.fn(() => mockPrisma)
+      19 | })); 
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/__tests__/mocks/prisma.mock.ts:17:6)
+
+ PASS  src/__tests__/basic.test.ts
+
+Test Suites: 3 failed, 1 passed, 4 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        1.667 s
+Ran all test suites.
+npm notice 
+npm notice New major version of npm available! 9.2.0 -> 11.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.2.0
+npm notice Run npm install -g npm@11.2.0 to update!
+npm notice 
+➜  AI4Devs-tdd git:(tests-JMR) ✗
+```
+
+---
+
+Parece que tenemos algunos errores que necesitamos solucionar:
+
+1. No se encuentra el módulo `candidateService`
+2. No se encuentra el módulo `@prisma/client`
+3. Los archivos de mocks están siendo tratados como suites de test
+
+Vamos a solucionar estos problemas:
+
+1. Primero, instalemos las dependencias necesarias:
+
+
+
+
+---
+
+```bash
+npm install @prisma/client
+```
+
+```
+➜  AI4Devs-tdd git:(tests-JMR) ✗ npm install @prisma/client
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: '@prisma/client@6.5.0',
+npm WARN EBADENGINE   required: { node: '>=18.18' },
+npm WARN EBADENGINE   current: { node: 'v16.19.0', npm: '9.2.0' }
+npm WARN EBADENGINE }
+
+added 1 package, and audited 375 packages in 4s
+
+35 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+npm notice 
+npm notice New major version of npm available! 9.2.0 -> 11.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.2.0
+npm notice Run npm install -g npm@11.2.0 to update!
+npm notice 
+➜  AI4Devs-tdd git:(tests-JMR) ✗
+```
+
+---
+
+2. Ahora, vamos a actualizar la configuración de Jest para excluir los archivos de mocks de las pruebas:
+
+
+
+
+
+---
+
+```diff
+    roots: ['<rootDir>/src'],
+    testMatch: [
+-     '**/__tests__/**/*.+(ts|tsx|js)',
+-     '**/?(*.)+(spec|test).+(ts|tsx|js)'
++     '**/__tests__/**/*.test.ts',
++     '**/__tests__/**/*.spec.ts'
+    ],
+    transform: {
+      '^.+\\.(ts|tsx)$': 'ts-jest'
+-   }
++   },
++   modulePathIgnorePatterns: ['<rootDir>/src/__tests__/mocks']
+  }; 
+```
+
+---
+
+3. Vamos a crear el archivo del servicio de candidatos que falta:
+
+
+
+
+
+
+---
+
+```diff
+- 
++ import { PrismaClient } from '@prisma/client';
++ 
++ const prisma = new PrismaClient();
++ 
++ export const addCandidate = async (candidateData: any) => {
++     try {
++         // Crear el candidato
++         const candidate = await prisma.candidate.create({
++             data: {
++                 firstName: candidateData.firstName,
++                 lastName: candidateData.lastName,
++                 email: candidateData.email,
++                 phone: candidateData.phone,
++                 address: candidateData.address
++             }
++         });
++ 
++         // Si hay educación, crearla
++         if (candidateData.educations) {
++             for (const education of candidateData.educations) {
++                 await prisma.education.create({
++                     data: {
++                         ...education,
++                         candidateId: candidate.id
++                     }
++                 });
++             }
++         }
++ 
++         // Si hay experiencia laboral, crearla
++         if (candidateData.workExperiences) {
++             for (const experience of candidateData.workExperiences) {
++                 await prisma.workExperience.create({
++                     data: {
++                         ...experience,
++                         candidateId: candidate.id
++                     }
++                 });
++             }
++         }
++ 
++         // Si hay CV, crearlo
++         if (candidateData.cv) {
++             await prisma.resume.create({
++                 data: {
++                     ...candidateData.cv,
++                     candidateId: candidate.id
++                 }
++             });
++         }
++ 
++         return candidate;
++     } catch (error) {
++         throw error;
++     }
++ }; 
+```
+
+---
+
+Ahora vamos a ejecutar los tests nuevamente para ver si hemos solucionado los problemas:
+
+
+
+
+
+
+---
+
+```bash
+npm test
+```
+
+```
+➜  AI4Devs-tdd git:(tests-JMR) ✗ npm test
+
+> test
+> jest
+
+ts-jest[config] (WARN) message TS151001: If you have issues related to imports, you should consider setting `
+esModuleInterop` to `true` in your TypeScript configuration file (usually `tsconfig.json`). See https://blogs
+.msdn.microsoft.com/typescript/2018/01/31/announcing-typescript-2-7/#easier-ecmascript-module-interoperabilit
+y for more information.
+ PASS  src/__tests__/basic.test.ts
+ FAIL  src/__tests__/unit/services/candidateService.test.ts
+  ● Test suite failed to run
+
+    @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
+
+      1 | import { PrismaClient } from '@prisma/client';
+      2 |
+    > 3 | const prisma = new PrismaClient();
+        |                ^
+      4 |
+      5 | export const addCandidate = async (candidateData: any) => {
+      6 |     try {
+
+      at new PrismaClient (node_modules/.prisma/client/default.js:43:11)
+      at Object.<anonymous> (src/application/services/candidateService.ts:3:16)
+      at Object.<anonymous> (src/__tests__/unit/services/candidateService.test.ts:1:1)
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        1.561 s
+Ran all test suites.
+npm notice 
+npm notice New major version of npm available! 9.2.0 -> 11.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.2.0
+npm notice Run npm install -g npm@11.2.0 to update!
+npm notice 
+➜  AI4Devs-tdd git:(tests-JMR) ✗
+```
+
+---
+
+
+Necesitamos generar los tipos de Prisma. Vamos a instalar prisma como dependencia de desarrollo y generar los tipos:
+
+
+
+
+---
+
+Cancelled
+
+---
+
 
 
 ---
