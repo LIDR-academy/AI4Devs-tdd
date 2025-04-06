@@ -126,6 +126,17 @@ Recuerda seguir añadiendo los prompts al fichero de prompts.
 Si creas un nuevo fichero para estos tests, debe contener dentro del nombre las iniciales LBN, igual que el primer fichero de test que creaste, que se llamaba tests-LBN.test.ts
 ```
 
+### Prompt #13
+**Fecha y Hora:** 2025-04-06 19:30
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+Actualmente tengo 4 ficheros de test en mi proyecto.
+Quiero renombrar los que no tengan las iniciales LBN en el nombre para que todos tengan el mismo formato.
+Cambia el nombre a los ficheros y además actualiza lo que sea necesario debido al cambio de los nombres.
+Como siempre, sigue actualizando el fichero de prompts.
+```
+
 ---
 
 ## Notas adicionales
