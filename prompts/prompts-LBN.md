@@ -54,6 +54,50 @@ Indícame como ejecutar los test y cual tendría que ser la salida esperada.
 Recuerda actualizar el fichero de prompts
 ```
 
+### Prompt #6
+**Fecha y Hora:** 2025-04-06 18:34
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+Si, vamos a implementar ahora los test "Tests de servicios (candidateService.ts)".
+Sigue actualizando el fichero de prompts.
+```
+
+### Prompt #7
+**Fecha y Hora:** 2025-04-06 18:40
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+Este es el resultado de ejecutar npm test; aparecen los errores que añado.
+Solucionalos.
+```
+
+### Prompt #8
+**Fecha y Hora:** 2025-04-06 18:45
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+For the code present, we get this error:
+```
+Argument of type '(data: CandidateData) => void' is not assignable to parameter of type 'UnknownFunction'.
+  Types of parameters 'data' and 'args' are incompatible.
+    Type 'unknown' is not assignable to type 'CandidateData'.
+```
+How can I resolve this? If you propose a fix, please make it concise.
+```
+
+### Prompt #9
+**Fecha y Hora:** 2025-04-06 18:48
+**LLM:** Claude 3.7 Sonnet
+**Prompt:**
+```
+For the code present, we get this error:
+```
+Argument of type '{ id: number; firstName: string; lastName: string; }' is not assignable to parameter of type 'never'.
+```
+How can I resolve this? If you propose a fix, please make it concise.
+```
+
 ---
 
 ## Notas adicionales
