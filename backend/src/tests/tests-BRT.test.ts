@@ -311,11 +311,12 @@ describe('CandidateService', () => {
 
     // Test 14: Verifica la creación exitosa de un candidato
     it('debería crear un candidato exitosamente', async () => {
-        // Datos de prueba
+        // Datos de prueba con email único
+        const timestamp = Date.now();
         const candidateData = {
             firstName: 'Juan',
             lastName: 'Pérez',
-            email: 'juan@example.com'
+            email: `juan${timestamp}@example.com`
         };
 
         // Mock del candidato creado
