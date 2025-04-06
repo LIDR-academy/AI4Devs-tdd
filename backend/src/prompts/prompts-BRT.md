@@ -1,121 +1,72 @@
-# Prompts utilizados para los tests BRT
 
-## Solicitud inicial
+IDE: Cursor
+Modelo: Claude 3.7 Sonet
 
-```
-Necesito que escribas tests unitarios de la aplicación de backend @backend. 
+# PROMPT 1
 
-Los tests deben comprobar tanto la subida de datos por parte de los candidatos como el guardado en la base de datos.
+    Eres un experto en Nodejs con conocimientos en testing con jest.
 
-Recuerda que para el guardado de datos debemos **mockear** los objetos encargados para que no se modifiquen realmente los datos en la base de datos.
+    Nos han pedido desarrollar los tests unitarios del backend de la aplicación @backend .
 
-Los tests deben crearse en el archivo @tests-BRT.test.ts 
+    Entiende toda la funcionalidad del aplicativo para seguir después mis indicaciones para desarrollar los tests.
 
-Hazme las preguntas que necesites para llevar a cabo tu tarea.
+    No escribas ningún código todavía.
 
-No escribas código todavía. Dime qué pasos vás a seguir en orden para que yo te confirme con cuál procedemos.
-```
+# PROMPT 2
 
-## Respuesta y pasos a seguir
+    Vamos a enfocarnos primero en los tests de la capa de aplicación. 
 
-```
-Para escribir tests unitarios para la aplicación de backend, seguiré estos pasos en orden:
+    Qué pasos vas a seguir para implementar los tests? Antes de escribir nada vamos a analizar el flujo paso a paso para poder entenderlo mejor.
 
-1. Explorar la estructura del proyecto para entender la arquitectura y los componentes principales
-2. Examinar los endpoints de la API para identificar las funcionalidades a testear
-3. Revisar los modelos y esquemas de la base de datos para entender la estructura de datos
-4. Analizar los controladores y servicios que gestionan la subida y guardado de datos
-5. Identificar los componentes que necesitan ser mockeados para evitar modificaciones reales en la base de datos
-6. Crear los tests unitarios enfocados en la subida de datos y el guardado en la base de datos
-7. Configurar los mocks necesarios para simular las operaciones de base de datos
-```
+# PROMPT 3
 
-## Estructura propuesta para los tests
+    Vamos a empezar con el test del validador. 
 
-```
-// Sección 1: Importaciones y configuración de mocks
-import { PrismaClient } from '@prisma/client';
-import { validateCandidateData } from '../application/validator';
-import { addCandidate } from '../application/services/candidateService';
-import { addCandidateController } from '../presentation/controllers/candidateController';
-import { uploadFile } from '../application/services/fileUploadService';
-import { Candidate } from '../domain/models/Candidate';
-import { Education } from '../domain/models/Education';
-import { WorkExperience } from '../domain/models/WorkExperience';
-import { Resume } from '../domain/models/Resume';
+    Solo vamos a desarrolalr el test de validateCandidateData, ya que el resto de métodos son usados por ese método.
 
-// Mocks para los modelos de dominio
-jest.mock('../domain/models/Candidate');
-jest.mock('../domain/models/Education');
-jest.mock('../domain/models/WorkExperience');
-jest.mock('../domain/models/Resume');
+    Usaremos el archvo @tests-BRT.test.ts para el desarrollo de los tests. 
 
-// Mock para PrismaClient
-jest.mock('@prisma/client');
+    Dime antes de escribir nada qué tests vas a desarrollar y te diré cuales son necesarios.
 
-// Sección 2: Tests de validación de datos
-describe('Validación de datos de candidato', () => {
-  // Tests para el validador
-});
+# PROMPT 4
 
-// Sección 3: Tests para el servicio de candidatos
-describe('Servicio de candidatos', () => {
-  // Tests para addCandidate
-});
+    Ok, vamos a desarrollar los tests.
+ 
+    Simplifica el código todo lo posible.
 
-// Sección 4: Tests para el controlador de candidatos
-describe('Controlador de candidatos', () => {
-  // Tests para el controlador
-});
+    Escribe comentarios en cada test para entender mejor el objetivo de cada uno.
 
-// Sección 5: Tests para la carga de archivos
-describe('Servicio de carga de archivos', () => {
-  // Tests para uploadFile
-});
+# PROMPT 5
 
-// Sección 6: Tests de integración
-describe('Flujo completo de registro de candidatos', () => {
-  // Tests para el flujo completo
-});
-```
+    No, con esos sería suficiente.
 
-## Preguntas y correcciones
+    Podemos probarlos?
 
-```
-Por qué estás haciendo el mock del @validator.ts ?
-```
 
-Respuesta:
-```
-Estoy haciendo un mock del `validator.ts` principalmente por dos razones:
+# PROMPT 6
 
-1. **Aislamiento de pruebas**: Al mockear el validador, podemos probar el comportamiento del servicio `addCandidate` de forma aislada. Esto nos permite verificar que el servicio llama correctamente al validador con los datos correspondientes, sin que el resultado de las pruebas dependa del funcionamiento interno del validador.
+    Perfecto! todos los tests están funcionando.
 
-2. **Simplificación de pruebas**: Para las pruebas del servicio y del controlador, no necesitamos probar nuevamente la lógica de validación (ya la probamos en la sección de tests del validador). Al mockear el validador, evitamos tener que crear datos perfectamente válidos para cada prueba del servicio y controlador, lo que simplifica nuestros test cases.
-```
+    Vamos a continuar con el resto de elementos de la aplicación. Vamos a validar ahora los modelos o entidades.
 
-Corrección solicitada:
-```
-Si, modifica test para que se use el validador real, ya que ese servicio en concreto no necesita interactuar con la infraestructura directamente.
-```
 
-## Estrategia para corrección de errores
+# PROMPT 7
 
-```
-Me parece correcto el enfoque. Antes de ejecutar los tests, hay un error en el linter de typescript en las líneas.
-```
+    Vamos a validar solo los modelos, por ahora sin mockear, y comprobaremos solo que los campos de cada modelo se establecen y se recuperan correctamente.
 
-```
-Centrémonos en conrregir en el paso 1. Corregimos el candidateService
-```
+    Dime que pasos vas a seguir con esta operación. No lo hagas hasta que no te confirme.
 
-```
-Vamos a corregir los tests relacionados con el servicio de carga de archivos.
-```
+# PROMPT 8
 
-## Comandos utilizados
+    Vale, ahora vamos a agregar el test de @candidateService.ts Debes tener en cuenta que no debe afectar a la base de datos.
 
-Para ejecutar los tests:
-```
-npm test
-```
+    No implementes nada todavía. Dime qué pasos vas a seguir.
+
+# PROMPT 9
+
+    Simplifica los casos a los más prioritarios.
+
+
+# PROMPT 10
+
+    Vale, vamos a implementarlo!
