@@ -72,7 +72,7 @@ const validateExperience = (experience: any) => {
 };
 
 const validateCV = (cv: any) => {
-    if (typeof cv !== 'object' || !cv.filePath || typeof cv.filePath !== 'string' || !cv.fileType || typeof cv.fileType !== 'string') {
+    if (!cv || typeof cv !== 'object' || Object.keys(cv).length === 0 || !cv.filePath || typeof cv.filePath !== 'string' || !cv.fileType || typeof cv.fileType !== 'string') {
         throw new Error('Invalid CV data');
     }
 };
@@ -101,7 +101,7 @@ export const validateCandidateData = (data: any) => {
         }
     }
 
-    if (data.cv && Object.keys(data.cv).length > 0) {
+    if (data.cv) {
         validateCV(data.cv);
     }
 };

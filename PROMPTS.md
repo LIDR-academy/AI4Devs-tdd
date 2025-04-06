@@ -5,3 +5,4 @@
 5) i had to reopen Cursor
 6) run tests and check
 7)  Warning: `ReactDOMTestUtils.act` is deprecated in favor of `React.act`. Import `act` from `react` instead of `react-dom/test-utils`. See https://react.dev/warnings/react-dom-test-utils for more info.
+8) now please create tests for the backend
