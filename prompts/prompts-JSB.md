@@ -1,4 +1,6 @@
-# First prompt: Testing Environment Setup
+# Prompts made in Cursor + Auto
+
+## First prompt: Testing Environment Setup
 
 You are an expert software engineer proficient in TDD and have a passion for creating high-quality software solutions.
 
@@ -15,7 +17,7 @@ Clarifications:
 - Before installing dependencies, creating files or writting code, give a brief explanation of the purpose of each step you are about to perform.
 - Save any given prompt to you to a file named "prompts.md" in the root directory of the project.
 
-# Second prompt: Tests creation
+## Second prompt: Tests creation
 
 As an expert software engineer, you have a deep understanding of the testing process and have the ability to write effective tests for the project.
 
@@ -41,8 +43,20 @@ Important:
 - Do not edit the actual code, all the tests must pass without any code change.
 - Before writing the tests, give a brief explanation of the purpose of each step you are about to perform.
 
-# Third prompt: Make test execution run from root directory
+## Third prompt: Make test execution run from root directory
 
 Can you make tests for frontend and backend being executed from the root directory?
 
 > This step was not requested but I personally prefer this way. Additionally, it can be achieved using frameworks like Turborepo, Nx, or Lerna.
+
+## Fourth prompt: Refactor backend test files
+
+I want all backend tests that you already have written in the file backend/src/tests/tests-JSB.test.ts
+
+> I missed that tests should be in the same file when I read the instructions the first time.
+
+## Fifth prompt: Refactor frontend test files
+
+now, remove frontend all test files but give an info message when executing frontend tests instead of an error
+
+> I decided to remove all frontend tests since they were not requested but still keep the test environment to be executed from the root directory (and further extend it to run tests from the frontend directory).
