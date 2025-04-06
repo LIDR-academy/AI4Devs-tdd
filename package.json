@@ -6,5 +6,21 @@
     "schema": "backend/prisma/schema.prisma"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "jtest": "^0.0.1",
+    "ts-jest": "^29.3.1",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "test": "jest __tests__/tests-iniciales.js",
+    "test:ts": "jest __tests__/tests-iniciales.test.ts",
+    "test:all": "jest",
+    "prisma:init": "npx prisma init",
+    "prisma:generate": "npx prisma generate",
+    "start:prod": "npm run build && npm start"
   }
 }
