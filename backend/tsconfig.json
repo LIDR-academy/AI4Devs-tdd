@@ -6,7 +6,12 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest", "node"],
+    "typeRoots": ["./node_modules/@types"],
+    "lib": ["es5", "es6", "es7", "esnext"],
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
