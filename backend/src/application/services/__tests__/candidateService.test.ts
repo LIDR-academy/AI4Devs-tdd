@@ -2,9 +2,6 @@ import { addCandidate } from '../candidateService';
 import prisma from '../../../__tests__/prisma';
 
 describe('Candidate Service', () => {
-    // We've moved the cleanup logic to the global setup.ts file
-    // so we don't need to duplicate it here
-
     describe('addCandidate', () => {
         it('should create a new candidate with basic information', async () => {
             const candidateData = {
