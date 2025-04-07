@@ -6,7 +6,6 @@ module.exports = {
   transform: {
     '^.+\\.ts$': ['ts-jest', {
       tsconfig: 'tsconfig.json',
-      isolatedModules: true,
       diagnostics: {
         ignoreCodes: [151001]
       }
