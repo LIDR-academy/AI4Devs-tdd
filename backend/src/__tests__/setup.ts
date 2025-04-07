@@ -1,11 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv';
-
-// Load test environment variables
-dotenv.config({ path: '.env.test' });
-
-// Create a new Prisma client for testing
-const prisma = new PrismaClient();
+import prisma from './prisma';
 
 // Clean up the database before each test
 beforeEach(async () => {

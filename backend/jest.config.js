@@ -23,10 +23,11 @@ module.exports = {
   ],
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   // Load test environment variables
-  setupFiles: ['dotenv/config'],
+  setupFiles: ['<rootDir>/node_modules/dotenv/config'],
   testEnvironmentOptions: {
     env: {
       NODE_ENV: 'test',
+      DOTENV_CONFIG_PATH: '.env.test'
     },
   },
   // Exclude setup file from test runs

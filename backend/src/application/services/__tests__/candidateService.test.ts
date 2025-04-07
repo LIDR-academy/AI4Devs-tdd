@@ -1,20 +1,9 @@
 import { addCandidate } from '../candidateService';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../../../__tests__/prisma';
 
 describe('Candidate Service', () => {
-    beforeEach(async () => {
-        // Clean up all tables before each test
-        await prisma.$executeRaw`TRUNCATE TABLE "Resume" CASCADE`;
-        await prisma.$executeRaw`TRUNCATE TABLE "Education" CASCADE`;
-        await prisma.$executeRaw`TRUNCATE TABLE "WorkExperience" CASCADE`;
-        await prisma.$executeRaw`TRUNCATE TABLE "Candidate" CASCADE`;
-    });
-
-    afterAll(async () => {
-        await prisma.$disconnect();
-    });
+    // We've moved the cleanup logic to the global setup.ts file
+    // so we don't need to duplicate it here
 
     describe('addCandidate', () => {
         it('should create a new candidate with basic information', async () => {
