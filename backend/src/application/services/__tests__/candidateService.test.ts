@@ -1,5 +1,4 @@
 import { addCandidate } from '../candidateService';
-import { Candidate } from '../../../domain/models/Candidate';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

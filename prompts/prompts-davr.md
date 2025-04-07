@@ -23,6 +23,7 @@ _Would you like me to help you create some sample tests now?_
 ## Prompt 4
 
 [At this point, I'm only interested in setting up a _sample_ test to prove that I can run tests, and that's what chat is offering.  I haven't looked at the second part of the homework yet.]
+
 yes!
 
 _Great! Let's create a test for the candidate service. First, let me check the candidate service implementation to understand what we need to test:..._
@@ -48,3 +49,4 @@ Wait, is there a way to fix the test failure without changing the implementation
 _Ah, you make a very good point! ..._
 
 [It fixed the tests, and then I moved on to setting up testing for the frontend.  Given that the second part of the homework doesn't touch on the frontend, I'm going to skip those prompts.]
+
