@@ -1,0 +1,35 @@
+
+#TESTS
+He desarrollado tres conjuntos de pruebas unitarias para garantizar que se cumplan los criterios de aceptación para la función de "Añadir Candidato":
+
+1. **Tests del validador (validator.test.ts)**: Estos tests se centran en garantizar la validación correcta de los datos ingresados en el formulario (Criterio 3).
+
+2. **Tests del servicio (candidateService.test.ts)**: Estos tests verifican la lógica de negocio para el procesamiento y guardado de candidatos en la base de datos.
+
+3. **Tests del controlador (candidateController.test.ts)**: Estos tests validan el comportamiento del controlador que maneja las solicitudes HTTP.
+
+## Pruebas destacadas
+
+### Para la familia "recepción de datos del formulario":
+El test más importante es **"should validate all required candidate fields before saving"** en candidateService.test.ts, que verifica que todos los campos requeridos sean validados antes de intentar guardar el candidato, asegurando que el criterio de aceptación 3 se cumple.
+
+### Para la familia "guardado en la base de datos":
+El test más importante es **"should successfully save a candidate to the database"** en candidateService.test.ts, que verifica que un candidato se guarda correctamente y confirma el éxito de la operación, cumpliendo con el criterio de aceptación 5.
+
+## Aspectos clave implementados
+
+1. **Mocking de Prisma Client**: Siguiendo las buenas prácticas mencionadas en la documentación de Prisma, he creado mocks completos para evitar acceder a la base de datos real durante las pruebas.
+
+2. **Casos límite**: He incluido pruebas para casos límite como:
+   - Longitudes máximas de campos
+   - Validación de formatos (email, teléfono, fechas)
+   - Errores de base de datos (duplicados, errores de conexión)
+   - Manejo de errores desconocidos
+
+3. **Cobertura de criterios de aceptación**:
+   - Validación de datos (Criterio 3)
+   - Carga de CV (Criterio 4)
+   - Confirmación de añadido exitoso (Criterio 5)
+   - Manejo de errores y excepciones (Criterio 6)
+
+Las pruebas están diseñadas siguiendo el patrón AAA (Arrange-Act-Assert) para mayor claridad y mantenibilidad, y cada una tiene comentarios que indican a qué criterio de aceptación se refiere.
