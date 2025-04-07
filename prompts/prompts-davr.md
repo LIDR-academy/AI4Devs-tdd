@@ -50,3 +50,15 @@ _Ah, you make a very good point! ..._
 
 [It fixed the tests, and then I moved on to setting up testing for the frontend.  Given that the second part of the homework doesn't touch on the frontend, I'm going to skip those prompts.]
 
+## Prompt 8
+
+I notice that some of the functionality in candidateService is duplicated (although badly) in Candidate.  In Express/Prisma, what's the best practice for handling dependent objects?
+
+_The duplication between Candidate.save() and candidateService.addCandidate() highlights a common architectural issue. In Express/Prisma applications, the best practice for handling dependent objects is to..._
+
+## Prompt 9
+
+Can you make that change for me?
+
+_I'll implement this change by refactoring the code to follow best practices with Express/Prisma. Let me first understand the current structure better..._
+

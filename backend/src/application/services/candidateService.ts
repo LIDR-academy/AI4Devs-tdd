@@ -3,53 +3,59 @@ import { validateCandidateData } from '../validator';
 import { Education } from '../../domain/models/Education';
 import { WorkExperience } from '../../domain/models/WorkExperience';
 import { Resume } from '../../domain/models/Resume';
+import { CandidateRepository } from '../../domain/repositories/candidateRepository';
+
+const candidateRepository = new CandidateRepository();
 
 export const addCandidate = async (candidateData: any) => {
     try {
-        validateCandidateData(candidateData); // Validar los datos del candidato
+        // Validate the candidate data
+        validateCandidateData(candidateData);
+
+        // Create a new Candidate domain entity with all its related entities
+        const candidate = new Candidate({
+            firstName: candidateData.firstName,
+            lastName: candidateData.lastName,
+            email: candidateData.email,
+            phone: candidateData.phone,
+            address: candidateData.address,
+            // Convert related entities
+            educations: candidateData.educations || [],
+            workExperiences: candidateData.workExperiences || [],
+            resumes: candidateData.cv ? [candidateData.cv] : []
+        });
+
+        // Use the repository to persist the candidate with all its relationships
+        const result = await candidateRepository.create(candidate);
+        return result;
     } catch (error: any) {
-        throw new Error(error);
+        throw error;
     }
+};
 
-    const candidate = new Candidate(candidateData); // Crear una instancia del modelo Candidate
+export const findCandidateById = async (id: number) => {
+    return await candidateRepository.findById(id);
+};
+
+export const updateCandidate = async (id: number, candidateData: any) => {
     try {
-        const savedCandidate = await candidate.save(); // Guardar el candidato en la base de datos
-        const candidateId = savedCandidate.id; // Obtener el ID del candidato guardado
-
-        // Guardar la educación del candidato
-        if (candidateData.educations) {
-            for (const education of candidateData.educations) {
-                const educationModel = new Education(education);
-                educationModel.candidateId = candidateId;
-                await educationModel.save();
-                candidate.education.push(educationModel);
-            }
+        // Find the existing candidate
+        const existingCandidate = await candidateRepository.findById(id);
+        if (!existingCandidate) {
+            throw new Error('Candidate not found');
         }
 
-        // Guardar la experiencia laboral del candidato
-        if (candidateData.workExperiences) {
-            for (const experience of candidateData.workExperiences) {
-                const experienceModel = new WorkExperience(experience);
-                experienceModel.candidateId = candidateId;
-                await experienceModel.save();
-                candidate.workExperience.push(experienceModel);
-            }
-        }
+        // Update the candidate properties
+        if (candidateData.firstName) existingCandidate.firstName = candidateData.firstName;
+        if (candidateData.lastName) existingCandidate.lastName = candidateData.lastName;
+        if (candidateData.email) existingCandidate.email = candidateData.email;
+        if (candidateData.phone) existingCandidate.phone = candidateData.phone;
+        if (candidateData.address) existingCandidate.address = candidateData.address;
 
-        // Guardar los archivos de CV
-        if (candidateData.cv && Object.keys(candidateData.cv).length > 0) {
-            const resumeModel = new Resume(candidateData.cv);
-            resumeModel.candidateId = candidateId;
-            await resumeModel.save();
-            candidate.resumes.push(resumeModel);
-        }
-        return savedCandidate;
+        // Use the repository to update the candidate
+        const result = await candidateRepository.update(existingCandidate);
+        return result;
     } catch (error: any) {
-        if (error.code === 'P2002') {
-            // Unique constraint failed on the fields: (`email`)
-            throw new Error('The email already exists in the database');
-        } else {
-            throw error;
-        }
+        throw error;
     }
 };
