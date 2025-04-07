@@ -22,8 +22,6 @@ module.exports = {
     '/prisma/',
   ],
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
-  // Load test environment variables
-  setupFiles: ['<rootDir>/node_modules/dotenv/config'],
   testEnvironmentOptions: {
     env: {
       NODE_ENV: 'test',
