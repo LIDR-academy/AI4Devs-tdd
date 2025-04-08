@@ -3,6 +3,7 @@
 #**/.env
 **/.env.example
 **/node_modules
+**/.specstory
 **/prompts_master.md
 
 # other dependencies
