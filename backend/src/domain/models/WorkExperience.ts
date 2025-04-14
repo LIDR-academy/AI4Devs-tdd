@@ -12,6 +12,10 @@ export class WorkExperience {
     candidateId?: number;
 
     constructor(data: any) {
+        if (!data.company || !data.position || !data.startDate) {
+            throw new Error('Missing required fields: company, position, and startDate are required');
+        }
+
         this.id = data.id;
         this.company = data.company;
         this.position = data.position;
@@ -22,29 +26,39 @@ export class WorkExperience {
     }
 
     async save() {
-        const workExperienceData: any = {
-            company: this.company,
-            position: this.position,
-            description: this.description,
-            startDate: this.startDate,
-            endDate: this.endDate
-        };
+        try {
+            const workExperienceData: any = {
+                company: this.company,
+                position: this.position,
+                description: this.description,
+                startDate: this.startDate,
+                endDate: this.endDate
+            };
 
-        if (this.candidateId !== undefined) {
-            workExperienceData.candidateId = this.candidateId;
-        }
+            if (this.candidateId !== undefined) {
+                workExperienceData.candidateId = this.candidateId;
+            }
 
-        if (this.id) {
-            // Actualizar una experiencia laboral existente
-            return await prisma.workExperience.update({
-                where: { id: this.id },
-                data: workExperienceData
-            });
-        } else {
-            // Crear una nueva experiencia laboral
-            return await prisma.workExperience.create({
-                data: workExperienceData
-            });
+            let result;
+            if (this.id) {
+                // Actualizar una experiencia laboral existente
+                result = await prisma.workExperience.update({
+                    where: { id: this.id },
+                    data: workExperienceData
+                });
+            } else {
+                // Crear una nueva experiencia laboral
+                result = await prisma.workExperience.create({
+                    data: workExperienceData
+                });
+            }
+
+            return new WorkExperience(result);
+        } catch (error: any) {
+            if (error.name === 'PrismaClientInitializationError') {
+                throw new Error('Failed to connect to database');
+            }
+            throw error;
         }
     }
 }
