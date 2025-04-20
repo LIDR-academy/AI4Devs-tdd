@@ -59,7 +59,7 @@ npm install
 ```
 cd backend
 npm run build
-````
+```
 4. Start the backend server:
 ```
 cd backend
@@ -80,7 +80,7 @@ The backend server will be running at http://localhost:3010, and the frontend wi
 
 ## Docker y PostgreSQL
 
-This project uses Docker to run a PostgreSQL database. Here’s how to get it up and running:
+This project uses Docker to run a PostgreSQL database. Here's how to get it up and running:
 
 Install Docker on your machine if you haven't done so already. You can download it from here.
 Navigate to the root directory of the project in your terminal.
@@ -106,12 +106,11 @@ docker-compose down
 
 To generate the database using Prisma, follow these steps:
 
-1. Make sure that the `.env` file in the root directory of the backend contains the `DATABASE_URL` variable with the correct connection string to your PostgreSQL database. If it doesn’t work, try replacing the full URL directly in `schema.prisma`, in the `url` variable.
+1. Make sure that the `.env` file in the root directory of the backend contains the `DATABASE_URL` variable with the correct connection string to your PostgreSQL database. If it doesn't work, try replacing the full URL directly in `schema.prisma`, in the `url` variable.
 
 2. Open a terminal and navigate to the backend directory where the `schema.prisma` file is located.
 
 3. Run the following command to apply the migrations to your database:
-
 ```
 npx prisma migrate dev
 ```
@@ -149,7 +148,48 @@ POST http://localhost:3010/candidates
     }
 }
 ```
--------------------------------------------------------------
+
+## Ejecución de Tests
+
+El proyecto incluye tests unitarios para verificar el correcto funcionamiento del sistema ATS. Para ejecutar los tests, puedes utilizar los siguientes comandos:
+
+### Ejecutar todos los tests
+
+Desde el directorio raíz:
+```
+npm test
+```
+
+Este comando ejecutará todos los tests disponibles en el proyecto.
+
+### Ejecutar tests específicos
+
+Para ejecutar solo los tests del sistema ATS:
+```
+cd backend && npm test -- __tests__/tests-iniciales.js
+```
+
+Para ejecutar un test básico:
+```
+cd backend && npm test -- __tests__/test-basico.js
+```
+
+### Ejecutar tests con opciones adicionales
+
+Para ejecutar tests en modo observación (watch mode), que volverá a ejecutar los tests cuando detecte cambios:
+```
+cd backend && npm test -- --watch __tests__/tests-iniciales.js
+```
+
+Para ejecutar tests con información detallada (verbose):
+```
+cd backend && npm test -- --verbose __tests__/tests-iniciales.js
+```
+
+Para generar un informe de cobertura de tests:
+```
+cd backend && npm test -- --coverage __tests__/tests-iniciales.js
+```
 
 # LTI - Sistema de Seguimiento de Talento | ES
 
@@ -212,7 +252,7 @@ npm install
 ```
 cd backend
 npm run build
-````
+```
 4. Inicia el servidor backend:
 ```
 cd backend
@@ -300,4 +340,46 @@ POST http://localhost:3010/candidates
         "fileType": "application/pdf"
     }
 }
+```
+
+## Ejecución de Tests
+
+El proyecto incluye tests unitarios para verificar el correcto funcionamiento del sistema ATS. Para ejecutar los tests, puedes utilizar los siguientes comandos:
+
+### Ejecutar todos los tests
+
+Desde el directorio raíz:
+```
+npm test
+```
+
+Este comando ejecutará todos los tests disponibles en el proyecto.
+
+### Ejecutar tests específicos
+
+Para ejecutar solo los tests del sistema ATS:
+```
+cd backend && npm test -- __tests__/tests-iniciales.js
+```
+
+Para ejecutar un test básico:
+```
+cd backend && npm test -- __tests__/test-basico.js
+```
+
+### Ejecutar tests con opciones adicionales
+
+Para ejecutar tests en modo observación (watch mode), que volverá a ejecutar los tests cuando detecte cambios:
+```
+cd backend && npm test -- --watch __tests__/tests-iniciales.js
+```
+
+Para ejecutar tests con información detallada (verbose):
+```
+cd backend && npm test -- --verbose __tests__/tests-iniciales.js
+```
+
+Para generar un informe de cobertura de tests:
+```
+cd backend && npm test -- --coverage __tests__/tests-iniciales.js
 ```
